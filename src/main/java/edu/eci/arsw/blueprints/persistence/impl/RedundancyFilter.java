@@ -27,7 +27,7 @@ public class RedundancyFilter implements Filtering {
         List<Point> points = blueprint.getPoints();
         List<Point> filteredPoints = new ArrayList<>();
 
-        filteredPoints.add(points.get(0));
+        if(!points.isEmpty()) filteredPoints.add(points.get(0));
 
         for(int i = 1; i < points.size(); i++) {
             if(points.get(i-1).getX() != points.get(i).getX() && points.get(i-1).getY() != points.get(i).getY()){

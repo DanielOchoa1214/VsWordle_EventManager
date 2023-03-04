@@ -5,21 +5,16 @@
  */
 package edu.eci.arsw.blueprints.controllers;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
+import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.blueprints.services.BlueprintsServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -43,7 +38,8 @@ public class BlueprintAPIController {
             Set<Blueprint> data = bpService.getBlueprintsByAuthor(author);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
         } catch (BlueprintNotFoundException e){
-            return new ResponseEntity<>("El autor no existe :'(", HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException(e.getMessage());
+            // return new ResponseEntity<>("El autor no existe :'(", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -53,7 +49,29 @@ public class BlueprintAPIController {
             Blueprint data = bpService.getBlueprint(author, bpName);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
         } catch (BlueprintNotFoundException e){
-            return new ResponseEntity<>("El plano especificado no existe... F", HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException(e.getMessage());
+            // return new ResponseEntity<>("El plano especificado no existe... F", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // POSTS
+    @PostMapping
+    public ResponseEntity<?> createBlueprint(@RequestBody Blueprint bp){
+        try{
+            bpService.addNewBlueprint(bp);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (BlueprintPersistenceException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        }
+    }
+
+    @PutMapping(value="/{author}/{bpName}")
+    public ResponseEntity<?> updateBlueprint(@PathVariable String author,@PathVariable String bpName, @RequestBody Blueprint bp ) {
+        try{
+            bpService.updateBlueprint(author, bpName, bp);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (BlueprintNotFoundException e) {
+            throw new ResourceNotFoundException(e.getMessage());
         }
     }
 }

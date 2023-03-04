@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -22,7 +23,7 @@ import java.util.*;
  */
 @Service
 public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
-    private final Map<Tuple<String,String>,Blueprint> blueprints=new HashMap<>();
+    private final Map<Tuple<String,String>,Blueprint> blueprints = new ConcurrentHashMap<>();
 
     public InMemoryBlueprintPersistence() {
         //load stub data
@@ -75,5 +76,11 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
     @Override
     public Set<Blueprint> getAllBlueprints() {
         return new HashSet<>(blueprints.values());
+    }
+
+    @Override
+    public void updateBlueprint(String author, String name, Blueprint newBp) throws BlueprintNotFoundException {
+        if(!blueprints.containsKey(new Tuple<>(author, name))) throw new BlueprintNotFoundException("No existe el plano especificado D:");
+        blueprints.put(new Tuple<>(author, name), newBp);
     }
 }

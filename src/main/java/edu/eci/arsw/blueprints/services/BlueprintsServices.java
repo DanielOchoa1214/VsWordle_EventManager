@@ -5,6 +5,7 @@
  */
 package edu.eci.arsw.blueprints.services;
 
+import edu.eci.arsw.blueprints.controllers.BlueprintAPIController;
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
@@ -56,5 +57,10 @@ public class BlueprintsServices {
      */
     public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException{
         return filter.filter(bpp.getBlueprintsByAuthor(author));
+    }
+
+
+    public void updateBlueprint(String author, String name, Blueprint newBp) throws BlueprintNotFoundException{
+        bpp.updateBlueprint(author, name, newBp);
     }
 }
