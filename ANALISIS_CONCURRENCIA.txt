@@ -1,5 +1,9 @@
 Qué condiciones de carrera se podrían presentar?
-El método de agregación de un nuevo plano esta sujeto a una condición de carrera pues no se
+El método de agregación de un nuevo plano esta sujeto a una condición de carrera puesto que con el estado actual de la colección si se corren diferentes operaciones al tiempo en esta
+no tenemos certeza del resultado que puede tomar, por ejemplo al hacer un post y un get donde el resultado no es deterministico.
 
 Cuales son las respectivas regiones críticas?
-La colección que contiene los planos, ya que esta es accedida por diferentes métodos del API
+La colección que contiene los planos, ya que esta es accedida por diferentes métodos del API.
+
+Solución.
+Para solucionar la condición de carrera y ya teniendo identificada la región crítica, simplemente volvemos la colección Thread-Safe con la clase ConcurrentHashMap.

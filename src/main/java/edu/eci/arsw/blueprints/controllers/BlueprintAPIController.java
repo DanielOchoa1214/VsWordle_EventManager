@@ -38,8 +38,7 @@ public class BlueprintAPIController {
             Set<Blueprint> data = bpService.getBlueprintsByAuthor(author);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
         } catch (BlueprintNotFoundException e){
-            throw new ResourceNotFoundException(e.getMessage());
-            // return new ResponseEntity<>("El autor no existe :'(", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("El autor no existe :'(", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -49,8 +48,7 @@ public class BlueprintAPIController {
             Blueprint data = bpService.getBlueprint(author, bpName);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
         } catch (BlueprintNotFoundException e){
-            throw new ResourceNotFoundException(e.getMessage());
-            // return new ResponseEntity<>("El plano especificado no existe... F", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("El plano especificado no existe... F", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -61,7 +59,7 @@ public class BlueprintAPIController {
             bpService.addNewBlueprint(bp);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (BlueprintPersistenceException e) {
-            throw new ResourceNotFoundException(e.getMessage());
+            return new ResponseEntity<>("Los datos enviados son incorrectos... :P", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -71,7 +69,7 @@ public class BlueprintAPIController {
             bpService.updateBlueprint(author, bpName, bp);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch (BlueprintNotFoundException e) {
-            throw new ResourceNotFoundException(e.getMessage());
+            return new ResponseEntity<>("No existe un plano con los datos especificados... :(", HttpStatus.NOT_FOUND);
         }
     }
 }

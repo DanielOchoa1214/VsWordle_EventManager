@@ -19,10 +19,7 @@ public class ApplicationServicesTests {
     
     @Test
     public void contextLoads() {
-        
-        
-        
-        
+
     }
 
 }
