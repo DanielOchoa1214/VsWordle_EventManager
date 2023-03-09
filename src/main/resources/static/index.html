@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Blueprints</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <script src="/webjars/jquery/jquery.min.js"></script>
+        <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet"
+          href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+        <script src="js/apimock.js"></script>
+        <script src="js/app.js"></script>
+    </head>
+    <body>
+        <input id="search-bar" type="text">
+        <button id="get-bps" onclick="app.updateBlueprints($('#search-bar').val())">Get Blueprints</button>
+        <p id="author"></p>
+        <table id="blueprints">
+            <thead>
+                <th>Blueprints Name</th>
+                <th>Number of points</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <p>Total user points: <span id="total-points"></span></p>
+    </body>
+</html>
