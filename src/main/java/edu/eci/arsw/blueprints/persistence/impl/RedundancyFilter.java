@@ -5,10 +5,7 @@ import edu.eci.arsw.blueprints.model.Point;
 import edu.eci.arsw.blueprints.persistence.Filtering;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class RedundancyFilter implements Filtering {
@@ -30,7 +27,7 @@ public class RedundancyFilter implements Filtering {
         if(!points.isEmpty()) filteredPoints.add(points.get(0));
 
         for(int i = 1; i < points.size(); i++) {
-            if(points.get(i-1).getX() != points.get(i).getX() && points.get(i-1).getY() != points.get(i).getY()){
+            if(!points.get(i-1).equals(points.get(i))){
                 filteredPoints.add(points.get(i));
             }
         }

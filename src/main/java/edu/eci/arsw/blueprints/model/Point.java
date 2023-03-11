@@ -42,4 +42,13 @@ public class Point {
     public String toString() {
         return "(" + x + " , " + y + ")";
     }
+
+    @Override
+    public boolean equals(Object point){
+        return this.equals((Point) point);
+    }
+
+    private boolean equals(Point point){
+        return this.x == point.x && this.y == point.y;
+    }
 }

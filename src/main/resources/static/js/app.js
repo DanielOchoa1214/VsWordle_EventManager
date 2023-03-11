@@ -25,13 +25,14 @@ let app = (function (api) {
     }
 
     let _renderTable = (objData, data) => {
+        $("#author").text(`${data[0].author}'s blueprints`);
         $("#blueprints tbody").text("");
         objData.map((x) => {
             let markup = `
             <tr>
                 <td>${x.name}</td>
                 <td>${x.pointsNum}</td>
-                <td><button onclick="app.drawBlueprint('${data[0].author}', '${x.name}')">Open</button></td>
+                <td><button class="btn btn-success" onclick="app.drawBlueprint('${data[0].author}', '${x.name}')">Open</button></td>
             </tr>`;
             $("#blueprints tbody").append(markup);
         });
@@ -45,7 +46,6 @@ let app = (function (api) {
     let _renderBlueprint = (data) => {
         $(document).ready(() => {
             _drawBlueprint(data);
-            // PREGUTNAR
             $("#blueprint-name").html(data.name);
         });
     }
@@ -72,15 +72,13 @@ let app = (function (api) {
         api.getBlueprintsByAuthor(authorName, _renderSearch);
     }
     publicFunctions.drawBlueprint = function (authorName, bpName) {
-        console.log(authorName);
         api.getBlueprintsByNameAndAuthor(authorName, bpName, _renderBlueprint);
     }
 
     return publicFunctions;
 
-})(apimock);
+})(apiclient);
 
-app.drawBlueprint("Ibai", "LaVeladaDelAño");
 
 /*
 Example of use:
