@@ -1,28 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Blueprints</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-        <script src="./webjars/jquery/jquery.min.js"></script>
-        <script type="text/css" src="./webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" type="text/css"
+
+<head>
+    <title>Blueprints</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="./webjars/jquery/jquery.min.js"></script>
+    <script type="text/css" src="./webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css"
           href="./webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
-         
-        <link rel="stylesheet" type="text/css" href="./style.css" />
-        <script src="js/apiclient.js"></script>
-        <script src="js/apimock.js"></script>
-        <script src="js/app.js"></script>
-    </head>
-    <body>
-        <div>
-            <h1>Blueprints</h1>
-            <input id="search-bar" class="input-sm" type="text" value="johncito">
-            <button id="get-bps" class="btn btn-primary" onclick="app.updateBlueprints($('#search-bar').val())">Get Blueprints</button>    
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <script src="js/apiclient.js"></script>
+    <script src="js/apimock.js"></script>
+    <script src="js/app.js"></script>
+</head>
+
+<body>
+    <div class="container text-center">
+        <div class="row justify-content-start">
+            <div class="col">
+                <h1 class="row justify-content-start">Blueprints</h1>
+                <div class="row justify-content-start">
+                    <div class="col-auto">
+                        <input id="search-bar" class="input-sm" type="text" value="johncito">
+                    </div>
+                    <div class="col-auto">
+                        <button id="get-bps" class="btn btn-primary " onclick="app.updateBlueprints($('#search-bar').val())">Get
+                            Blueprints</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div style="display: flex; justify-content: space-evenly;">
-            <div>
+        <div class="row justify-content-around">
+            <div class="col">
                 <h3 id="author"></h3>
                 <table id="blueprints" class="table table-bordered table-hover">
                     <thead>
@@ -34,10 +51,12 @@
                 </table>
                 <h3>Total user points: <span id="total-points"></span></h3>
             </div>
-            <div>
+            <div class="col">
                 <h3>Current blueprint: <span id="blueprint-name"></span></h3>
                 <canvas id="blueprints-canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
             </div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
