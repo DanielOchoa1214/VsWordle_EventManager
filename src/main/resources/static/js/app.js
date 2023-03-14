@@ -10,6 +10,7 @@ let app = (function (api) {
             objData = _dataToObject(data);
             _renderTable(objData, data);
             _calculateTotalPoints(objData);
+            _showResults();
             _blueprints = objData;
         });
     }
@@ -43,10 +44,17 @@ let app = (function (api) {
         $("#total-points").html(totalPoints);
     }
 
+    let _showResults = () => {
+        $("#successful-search").removeClass("remove");
+        $("#search-error").addClass("remove");
+        $("#search-section").removeClass("not-visible");
+        $("#canvas-section").addClass("not-visible");
+    }
+
     let _renderBlueprint = (data) => {
         $(document).ready(() => {
             _drawBlueprint(data);
-            $("#blueprint-name").html(data.name);
+            _showDrawing(data);
         });
     }
 
@@ -64,6 +72,11 @@ let app = (function (api) {
         ctx.stroke();
     }
 
+    let _showDrawing = (data) => {
+        $("#blueprint-name").html(data.name);
+        $("#canvas-section").removeClass("not-visible");
+    }
+ 
     publicFunctions.setName = function (newName) {
         _author = newName;
     }
