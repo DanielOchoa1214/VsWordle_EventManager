@@ -21,7 +21,7 @@
     <script src="js/app.js"></script>
 </head>
 
-<body>
+<body onLoad="app.init()">
     <div class="container text-center">
         <div class="row justify-content-start">
             <div class="col">
@@ -55,7 +55,7 @@
                 <canvas id="blueprints-canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
             </div>
         </div>
-        <div id="search-error" class="mt-5">
+        <div id="search-error" class="mt-5 remove">
             <h2>El autor que buscaste no existe D:</h2>
         </div>
     </div>

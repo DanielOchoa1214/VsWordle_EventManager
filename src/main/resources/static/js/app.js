@@ -4,6 +4,8 @@ let app = (function (api) {
     let _author = "";
     let _blueprints = [];
     let publicFunctions = {};
+    let currentBp = {};
+    //let canvas = $("#blueprints-canvas")[0];
 
     let _renderSearch = (data) => {
         $(document).ready(() => {
@@ -55,6 +57,7 @@ let app = (function (api) {
         $(document).ready(() => {
             _drawBlueprint(data);
             _showDrawing(data);
+            currentBp = data;
         });
     }
 
@@ -76,6 +79,29 @@ let app = (function (api) {
         $("#blueprint-name").html(data.name);
         $("#canvas-section").removeClass("not-visible");
     }
+
+    let _draw = function (event) {
+        let canvas = $("#blueprints-canvas")[0];
+        context = canvas.getContext("2d");
+        let offset  = _getOffset(canvas);
+        //context.fillRect(event.pageX-offset.left, event.pageY-offset.top, 5, 5);
+        currentBp.points.push({x: event.pageX-offset.left, y: event.pageY-offset.top});
+        _renderBlueprint(currentBp);
+    }
+
+    let _getOffset = function (obj) {
+        var offsetLeft = 0;
+        var offsetTop = 0;
+        do {
+          if (!isNaN(obj.offsetLeft)) {
+              offsetLeft += obj.offsetLeft;
+          }
+          if (!isNaN(obj.offsetTop)) {
+              offsetTop += obj.offsetTop;
+          }   
+        } while(obj = obj.offsetParent );
+        return {left: offsetLeft, top: offsetTop};
+    } 
  
     publicFunctions.setName = function (newName) {
         _author = newName;
@@ -87,10 +113,19 @@ let app = (function (api) {
     publicFunctions.drawBlueprint = function (authorName, bpName) {
         api.getBlueprintsByNameAndAuthor(authorName, bpName, _renderBlueprint);
     }
+    publicFunctions.init = function() {
+        let canvas = $("#blueprints-canvas")[0]; 
+        ctx = canvas.getContext("2d");
+        if(window.PointerEvent) {
+            canvas.addEventListener("pointerdown", _draw, false); 
+        } else {
+            canvas.addEventListener("mousedown", _draw, false);
+        }
+    }
 
     return publicFunctions;
 
-})(apiclient);
+})(apimock);
 
 
 /*
