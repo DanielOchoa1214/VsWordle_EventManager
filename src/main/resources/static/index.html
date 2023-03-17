@@ -31,7 +31,7 @@
                         <input id="search-bar" class="input-sm" type="text" value="johncito">
                     </div>
                     <div class="col-auto">
-                        <button id="get-bps" class="btn btn-primary " onclick="app.updateBlueprints($('#search-bar').val())">Get
+                        <button id="get-bps" class="btn btn-primary " onclick="app.searchBlueprints($('#search-bar').val())">Get
                             Blueprints</button>
                     </div>
                 </div>
@@ -51,12 +51,20 @@
                 <h3>Total user points: <span id="total-points"></span></h3>
             </div>
             <div id="canvas-section" class="col not-visible">
+                <div class="mb-3">
+                    <button id="button-create" class="btn btn-danger" onclick="app.createBlueprint()">Create new blueprint</button>
+                    <input id="new-bpname" class="input-sm remove" type="text" placeholder="New Name" required>
+                </div>
                 <h3>Current blueprint: <span id="blueprint-name"></span></h3>
                 <canvas id="blueprints-canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+                <div>
+                    <button id="button-save" class="btn btn-success" onclick="app.updateBlueprint()">Save/Update</button>
+                    <button id="button-delete" class="btn btn-danger" onclick="app.deleteBlueprint()">Delete</button>
+                </div>
             </div>
         </div>
         <div id="search-error" class="mt-5 remove">
-            <h2>El autor que buscaste no existe D:</h2>
+            <h2>Oppsss.... sucedio un error, no me baje la nota :(</h2>
         </div>
     </div>
 </body>

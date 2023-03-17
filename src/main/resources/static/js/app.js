@@ -3,8 +3,9 @@
 let app = (function (api) {
     let _author = "";
     let _blueprints = [];
-    let publicFunctions = {};
-    let currentBp = {};
+    let _publicFunctions = {};
+    let _currentBp = {};
+    let _isCreating = false;
     //let canvas = $("#blueprints-canvas")[0];
 
     let _renderSearch = (data) => {
@@ -57,22 +58,35 @@ let app = (function (api) {
         $(document).ready(() => {
             _drawBlueprint(data);
             _showDrawing(data);
-            currentBp = data;
+            _currentBp = data;
         });
     }
 
     let _drawBlueprint = (data) => {
         let points = data.points;
-        let canvas = $("#blueprints-canvas")[0];
-        let ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.beginPath();
+        let ctx = _clearCanvas();
         ctx.moveTo(points[0].x, points[0].y);
         for (let i = 1; i < points.length; i++) {
             const point = points[i];
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
+    }
+
+    let _clearCanvas = () => {
+        let canvas = $("#blueprints-canvas")[0];
+        let ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        return ctx;
+    }
+    
+    let _newBlueprint = () => {
+        _currentBp = {
+            author:_author,
+            points:[],
+            name:""
+        };
     }
 
     let _showDrawing = (data) => {
@@ -84,9 +98,8 @@ let app = (function (api) {
         let canvas = $("#blueprints-canvas")[0];
         context = canvas.getContext("2d");
         let offset  = _getOffset(canvas);
-        //context.fillRect(event.pageX-offset.left, event.pageY-offset.top, 5, 5);
-        currentBp.points.push({x: event.pageX-offset.left, y: event.pageY-offset.top});
-        _renderBlueprint(currentBp);
+        _currentBp.points.push({x: event.pageX-offset.left, y: event.pageY-offset.top});
+        _renderBlueprint(_currentBp);
     }
 
     let _getOffset = function (obj) {
@@ -101,19 +114,26 @@ let app = (function (api) {
           }   
         } while(obj = obj.offsetParent );
         return {left: offsetLeft, top: offsetTop};
-    } 
+    }
+
+    let _createBp = () => {
+        let newBpName = $("#new-bpname").val();
+        _currentBp.name = newBpName;
+    }
  
-    publicFunctions.setName = function (newName) {
+    _publicFunctions.setName = function (newName) {
         _author = newName;
     }
 
-    publicFunctions.updateBlueprints = function (authorName) {
+    _publicFunctions.searchBlueprints = function (authorName) {
+        this.setName(authorName);
         api.getBlueprintsByAuthor(authorName, _renderSearch);
     }
-    publicFunctions.drawBlueprint = function (authorName, bpName) {
+    _publicFunctions.drawBlueprint = function (authorName, bpName) {
+        $("#new-bpname").addClass("remove");
         api.getBlueprintsByNameAndAuthor(authorName, bpName, _renderBlueprint);
     }
-    publicFunctions.init = function() {
+    _publicFunctions.init = function() {
         let canvas = $("#blueprints-canvas")[0]; 
         ctx = canvas.getContext("2d");
         if(window.PointerEvent) {
@@ -122,10 +142,37 @@ let app = (function (api) {
             canvas.addEventListener("mousedown", _draw, false);
         }
     }
+    _publicFunctions.updateBlueprint = function() {
+        //duda porque funciona
+        if(_isCreating) {
+            if (!$("#new-bpname").val()) {
+                alert("El campo new name debe estar lleno");
+                return;
+            }
+            _isCreating = false;
+            _createBp();
+            $("#new-bpname").addClass("remove");
+            $("#button-delete").prop("disabled", false);
+            return api.postBlueprint(_currentBp).then(res => this.searchBlueprints(_currentBp.author));
+        }
+        return api.putBlueprint(_currentBp).then(res => this.searchBlueprints(_currentBp.author));
+    }
 
-    return publicFunctions;
+    _publicFunctions.createBlueprint = function() {
+        $("#new-bpname").removeClass("remove");
+        $("#button-delete").prop("disabled", true);
+        _isCreating = true;
+        _newBlueprint();
+        _clearCanvas();
+    }
 
-})(apimock);
+    _publicFunctions.deleteBlueprint = function() {
+        api.deleteBlueprint(_currentBp.author, _currentBp.name).then(res => this.searchBlueprints(_currentBp.author));
+    }
+
+    return _publicFunctions;
+
+})(apiclient);
 
 
 /*

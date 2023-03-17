@@ -72,5 +72,15 @@ public class BlueprintAPIController {
             return new ResponseEntity<>("No existe un plano con los datos especificados... :(", HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping(value="/{author}/{bpName}")
+    public ResponseEntity<?> deleteBlueprint(@PathVariable String author,@PathVariable String bpName) {
+        try{
+            bpService.deleteBlueprint(author, bpName);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (BlueprintNotFoundException e) {
+            return new ResponseEntity<>("No existe un plano con los datos especificados... :(", HttpStatus.NOT_FOUND);
+        }
+    }
 }
 
