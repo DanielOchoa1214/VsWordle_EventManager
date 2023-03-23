@@ -2,11 +2,10 @@ package edu.eci.arsw.wordle.model;
 
 public class Player {
     private String nickname;
-    private int roundsWon;
+    private int roundsWon = 0;
 
-    public Player(String nickname, int roundsWon){
+    public Player(String nickname){
         this.nickname = nickname;
-        this.roundsWon = roundsWon;
     }
 
     public void addRoundWon(){

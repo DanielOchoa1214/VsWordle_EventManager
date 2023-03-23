@@ -16,9 +16,9 @@ public class PalabrasAPIController {
     PalabraServices palabraServices = null;
 
     @RequestMapping()
-    public ResponseEntity<?> proveLetter(@RequestParam Character letter, @RequestParam int posLetter, @RequestParam int round, @RequestParam String player, @RequestParam boolean previousMistake) {
+    public ResponseEntity<?> proveLetter(@RequestParam String palabra, @RequestParam int round, @RequestParam String nickname) {
         try{
-            boolean data = palabraServices.proveLetter(posLetter, round, letter);
+            boolean data = palabraServices.provePalabra(palabra, round, nickname);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
         } catch (Exception e){
             return new ResponseEntity<>("No se encontro la letra", HttpStatus.NOT_FOUND);

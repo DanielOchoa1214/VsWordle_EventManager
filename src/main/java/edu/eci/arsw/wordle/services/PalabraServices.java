@@ -1,29 +1,32 @@
 package edu.eci.arsw.wordle.services;
 
+import edu.eci.arsw.wordle.model.Palabra;
 import edu.eci.arsw.wordle.model.Player;
-import edu.eci.arsw.wordle.persistence.Palabras;
+import edu.eci.arsw.wordle.persistence.PalabraInterface;
 import edu.eci.arsw.wordle.persistence.PalabrasNotFoundException;
-import edu.eci.arsw.wordle.persistence.Players;
+import edu.eci.arsw.wordle.persistence.PlayerInterface;
+import edu.eci.arsw.wordle.persistence.PlayerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PalabraServices {
 
     @Autowired
-    private final Palabras palabras = null;
+    private final PalabraInterface palabras = null;
     @Autowired
-    private Players playerList = null;
+    private PlayerInterface playerList = null;
 
-    public boolean proveLetter(int posLetter, int round, Character letter) throws PalabrasNotFoundException {
-        return palabras.getLetter(posLetter, round) == letter;
-    }
-
-    public void proveWord(int round, boolean previousMistake, String nickname) {
-        //front me envia que la palabra se completo
-        //preguntar implementación
-        return;
+    public boolean provePalabra(String palabra, int round, String nickname) throws PalabrasNotFoundException, PlayerNotFoundException {
+        Palabra wordInt = new Palabra(palabra);
+        Palabra word = palabras.getPalabra(round);
+        synchronized (word) {
+            if(!word.isTaken() && wordInt.equals(palabras.getPalabra(round))) {
+                word.setTaken(true);
+                playerList.getPlayer(nickname).addRoundWon();
+                return true;
+            }
+        }
+        return false;
     }
 }
