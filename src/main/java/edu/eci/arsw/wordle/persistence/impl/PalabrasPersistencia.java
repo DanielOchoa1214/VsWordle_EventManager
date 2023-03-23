@@ -12,9 +12,16 @@ public class PalabrasPersistencia implements PalabraInterface {
 
     public PalabrasPersistencia() {
         //prueba
-        palabras.add(new Palabra("nuevo"));
+        palabras.add(new Palabra("cagastes"));
+        palabras.add(new Palabra("nuevos"));
         palabras.add(new Palabra("permanecer"));
-        palabras.add(new Palabra("nunca"));
+        palabras.add(new Palabra("textos"));
+        palabras.add(new Palabra("compañeros"));
+        palabras.add(new Palabra("adicional"));
+        palabras.add(new Palabra("chupeteo"));
+        palabras.add(new Palabra("loquito"));
+        palabras.add(new Palabra("madera"));
+        palabras.add(new Palabra("maderista"));
     }
 
     @Override

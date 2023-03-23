@@ -29,4 +29,8 @@ public class PalabraServices {
         }
         return false;
     }
+
+    public String getWord(int round) throws PalabrasNotFoundException {
+        return palabras.getPalabra(round).getText();
+    }
 }

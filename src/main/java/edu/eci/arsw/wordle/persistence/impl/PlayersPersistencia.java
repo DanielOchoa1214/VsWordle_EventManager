@@ -15,6 +15,7 @@ public class PlayersPersistencia implements PlayerInterface {
     public PlayersPersistencia() {
         playerList.add(new Player("Yo"));
         playerList.add(new Player("Juliana"));
+        playerList.add(new Player("DANO"));
     }
 
     public Player getPlayer(String nickname) throws PlayerNotFoundException {
