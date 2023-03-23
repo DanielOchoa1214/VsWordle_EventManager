@@ -15,8 +15,8 @@ public class PalabrasAPIController {
     @Autowired
     PalabraServices palabraServices = null;
 
-    @RequestMapping(value = "/prove")
-    public ResponseEntity<?> proveLetter(@RequestParam Character letter, @RequestParam int posLetter, @RequestParam int round){
+    @RequestMapping()
+    public ResponseEntity<?> proveLetter(@RequestParam Character letter, @RequestParam int posLetter, @RequestParam int round, @RequestParam String player, @RequestParam boolean previousMistake) {
         try{
             boolean data = palabraServices.proveLetter(posLetter, round, letter);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
