@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PlayersPersistencia implements PlayerInterface {
@@ -26,7 +27,7 @@ public class PlayersPersistencia implements PlayerInterface {
         }
         throw new PlayerNotFoundException("No se econcontro el player");
     }
-    public List<Player> getPlayerList() {
+    public List<Player> getPlayers() {
         return playerList;
     }
 

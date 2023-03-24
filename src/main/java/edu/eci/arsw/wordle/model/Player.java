@@ -8,6 +8,7 @@ public class Player {
         this.nickname = nickname;
     }
 
+    public Player(){}
     public void addRoundWon(){
         roundsWon++;
     }
