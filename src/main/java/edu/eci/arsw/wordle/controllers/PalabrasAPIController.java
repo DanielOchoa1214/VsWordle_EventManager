@@ -16,7 +16,7 @@ public class PalabrasAPIController {
     @Autowired
     PalabraServices palabraServices = null;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping()
     public ResponseEntity<?> proveLetter(@RequestParam String palabra, @RequestParam int round, @RequestParam String nickname) {
         try{
             boolean data = palabraServices.provePalabra(palabra, round, nickname);
@@ -26,7 +26,7 @@ public class PalabrasAPIController {
         }
     }
 
-    @RequestMapping(value = "/{round}", method = RequestMethod.GET)
+    @GetMapping(value = "/{round}")
     public ResponseEntity<?> getWord(@PathVariable("round")  int round) {
         try{
             String data = palabraServices.getWord(round);
