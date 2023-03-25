@@ -16,7 +16,9 @@ public class LobbyServices {
 
     public void addPlayer(Player player) {
         synchronized (playerList) {
-            playerList.addPlayer(player);
+            if (playerList.getPlayers().size() <= 5) {
+                playerList.addPlayer(player);
+            }
         }
     }
 
