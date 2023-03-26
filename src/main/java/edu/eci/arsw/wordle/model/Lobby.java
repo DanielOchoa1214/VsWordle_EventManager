@@ -26,7 +26,7 @@ public class Lobby {
     }
 
     private void setClosed() {
-        if(playerList.size() > maxPlayers) {
+        if(playerList.size() >= maxPlayers) {
             isClosed = true;
         }
     }

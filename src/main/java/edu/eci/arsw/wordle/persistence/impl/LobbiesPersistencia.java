@@ -17,7 +17,7 @@ public class LobbiesPersistencia implements LobbiesInterface {
 
     public LobbiesPersistencia() {
         lobby = new Lobby(5,
-                crearJugadores(), crearPalabras());
+                new ArrayList<Player>(), crearPalabras());
     }
 
     //pruebas
@@ -35,15 +35,6 @@ public class LobbiesPersistencia implements LobbiesInterface {
         palabras.add(new Palabra("madera"));
         palabras.add(new Palabra("maderista"));
         return palabras;
-    }
-
-    //pruebas
-    public List<Player> crearJugadores() {
-        List<Player> players = new ArrayList<>();
-        players.add(new Player("Yo"));
-        players.add(new Player("Juliana"));
-        players.add(new Player("DANO"));
-        return players;
     }
 
     @Override
