@@ -7,11 +7,17 @@ import edu.eci.arsw.wordle.persistence.LobbiesInterface;
 import edu.eci.arsw.wordle.persistence.PlayerNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 @Service
 public class LobbiesPersistencia implements LobbiesInterface {
+
+    private static final String ARCHIVO_PALABRAS = "wordlist_spanish_fil.txt";
 
     private Lobby lobby;
 
@@ -23,17 +29,24 @@ public class LobbiesPersistencia implements LobbiesInterface {
     //pruebas
     private List<Palabra> crearPalabras() {
         List<Palabra> palabras = new ArrayList<>();
-        //prueba
-        palabras.add(new Palabra("cagastes"));
-        palabras.add(new Palabra("nuevos"));
-        palabras.add(new Palabra("permanecer"));
-        palabras.add(new Palabra("textos"));
-        palabras.add(new Palabra("compañeros"));
-        palabras.add(new Palabra("adicional"));
-        palabras.add(new Palabra("chupeteo"));
-        palabras.add(new Palabra("loquito"));
-        palabras.add(new Palabra("madera"));
-        palabras.add(new Palabra("maderista"));
+        try {
+            File file = new File(ARCHIVO_PALABRAS);
+            Scanner scanner = new Scanner(file);
+
+            while (scanner.hasNextLine()) {
+                String palabra = scanner.nextLine();
+                Palabra p = new Palabra(palabra);
+                palabras.add(p);
+            }
+
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // Mezclar aleatoriamente la lista de palabras
+        Collections.shuffle(palabras);
+
         return palabras;
     }
 
