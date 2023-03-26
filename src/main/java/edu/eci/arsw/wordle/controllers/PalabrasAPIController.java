@@ -1,5 +1,6 @@
 package edu.eci.arsw.wordle.controllers;
 
+import edu.eci.arsw.wordle.model.Player;
 import edu.eci.arsw.wordle.persistence.PalabrasNotFoundException;
 import edu.eci.arsw.wordle.services.PalabraServices;
 import org.springframework.beans.factory.annotation.Autowired;

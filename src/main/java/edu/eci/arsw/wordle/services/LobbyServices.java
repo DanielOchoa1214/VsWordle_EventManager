@@ -1,7 +1,7 @@
 package edu.eci.arsw.wordle.services;
 
 import edu.eci.arsw.wordle.model.Player;
-import edu.eci.arsw.wordle.persistence.PlayerInterface;
+import edu.eci.arsw.wordle.persistence.LobbiesInterface;
 import edu.eci.arsw.wordle.persistence.PlayerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,21 +12,25 @@ import java.util.List;
 public class LobbyServices {
 
     @Autowired
-    private PlayerInterface playerList = null;
+    private LobbiesInterface lobby = null;
 
-    public void addPlayer(Player player) {
-        synchronized (playerList) {
-            if (playerList.getPlayers().size() <= 5) {
-                playerList.addPlayer(player);
-            }
-        }
+    public boolean newLobby (Player host, int maxPlayers) {
+        return false;
+    }
+
+    public boolean addPlayer(Player player) {
+        return lobby.getLobby().addPlayer(player);
     }
 
     public Player getPlayer(String nickname) throws PlayerNotFoundException {
-        return playerList.getPlayer(nickname);
+        return lobby.getPlayer(nickname);
     }
 
     public List<Player> getPlayerList() {
-        return playerList.getPlayers();
+        return lobby.getPlayers();
+    }
+
+    public List<String> getMissingPlayers(String host) {
+        return lobby.getMissingPlayers(host);
     }
 }

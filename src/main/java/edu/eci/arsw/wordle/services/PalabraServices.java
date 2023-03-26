@@ -2,10 +2,7 @@ package edu.eci.arsw.wordle.services;
 
 import edu.eci.arsw.wordle.model.Palabra;
 import edu.eci.arsw.wordle.model.Player;
-import edu.eci.arsw.wordle.persistence.PalabraInterface;
-import edu.eci.arsw.wordle.persistence.PalabrasNotFoundException;
-import edu.eci.arsw.wordle.persistence.PlayerInterface;
-import edu.eci.arsw.wordle.persistence.PlayerNotFoundException;
+import edu.eci.arsw.wordle.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,17 +10,15 @@ import org.springframework.stereotype.Service;
 public class PalabraServices {
 
     @Autowired
-    private final PalabraInterface palabras = null;
-    @Autowired
-    private PlayerInterface playerList = null;
+    private LobbiesInterface lobby;
 
     public boolean provePalabra(String palabra, int round, String nickname) throws PalabrasNotFoundException, PlayerNotFoundException {
         Palabra wordInt = new Palabra(palabra);
-        Palabra word = palabras.getPalabra(round);
+        Palabra word = lobby.getPalabra(round);
         synchronized (word) {
-            if(!word.isTaken() && wordInt.equals(palabras.getPalabra(round))) {
+            if(!word.isTaken() && wordInt.equals(lobby.getPalabra(round))) {
                 word.setTaken(true);
-                playerList.getPlayer(nickname).addRoundWon();
+                lobby.getPlayer(nickname).addRoundWon();
                 return true;
             }
         }
@@ -31,6 +26,7 @@ public class PalabraServices {
     }
 
     public String getWord(int round) throws PalabrasNotFoundException {
-        return palabras.getPalabra(round).getText();
+        return lobby.getPalabra(round).getText();
     }
+
 }

@@ -40,10 +40,20 @@ public class LobbyAPIController {
     @PostMapping
     public ResponseEntity<?> addPlayer(@RequestBody Player player) {
         try{
-            lobbyServices.addPlayer(player);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            boolean success = lobbyServices.addPlayer(player);
+            return new ResponseEntity<>(success, HttpStatus.CREATED);
         } catch (Exception e){
-            return new ResponseEntity<>("No se encontro la letra", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("El jugador no se pudo añadir", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(value = "/players/missing")
+    public ResponseEntity<?> addPlayer(@RequestParam String host) {
+        try{
+            List<String> missingPlayers = lobbyServices.getMissingPlayers(host);
+            return new ResponseEntity<>(missingPlayers, HttpStatus.CREATED);
+        } catch (Exception e){
+            return new ResponseEntity<>("La petición no se pudo procesar", HttpStatus.NOT_FOUND);
         }
     }
 }
