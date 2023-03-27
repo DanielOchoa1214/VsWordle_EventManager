@@ -1,5 +1,6 @@
 package edu.eci.arsw.wordle.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Lobby {
@@ -9,9 +10,10 @@ public class Lobby {
     private final List<Palabra> palabraList;
     private int idLobby;
 
-    public Lobby(int maxPlayers, List<Player> playerList, List<Palabra> palabraList) {
+    public Lobby(int id, int maxPlayers, List<Palabra> palabraList) {
+        this.idLobby = id;
         this.maxPlayers=maxPlayers;
-        this.playerList=playerList;
+        this.playerList= new ArrayList<>();
         this.palabraList=palabraList;
     }
     public boolean addPlayer(Player player) {

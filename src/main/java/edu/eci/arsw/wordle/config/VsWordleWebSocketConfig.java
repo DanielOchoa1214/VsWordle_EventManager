@@ -1,4 +1,4 @@
-package edu.eci.arsw.wordle.controllers;
+package edu.eci.arsw.wordle.config;
 
 
 import org.springframework.context.annotation.Configuration;

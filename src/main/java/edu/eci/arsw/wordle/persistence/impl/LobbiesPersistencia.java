@@ -4,50 +4,59 @@ import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Palabra;
 import edu.eci.arsw.wordle.model.Player;
 import edu.eci.arsw.wordle.persistence.LobbiesInterface;
+import edu.eci.arsw.wordle.persistence.PalabrasNotFoundException;
 import edu.eci.arsw.wordle.persistence.PlayerNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 @Service
 public class LobbiesPersistencia implements LobbiesInterface {
 
     private static final String ARCHIVO_PALABRAS = "wordlist_spanish_fil.txt";
-
+    private List<Palabra> wordList = null;
     private Lobby lobby;
 
     public LobbiesPersistencia() {
-        lobby = new Lobby(5,
-                new ArrayList<Player>(), crearPalabras());
+        getWordList();
+        lobby = new Lobby(1, 5, getLobbyWords(10));
     }
 
-    //pruebas
-    private List<Palabra> crearPalabras() {
-        List<Palabra> palabras = new ArrayList<>();
+    private void getWordList() {
+        wordList = new ArrayList<>();
+        BufferedReader br = null;
         try {
             File file = new File(ARCHIVO_PALABRAS);
-            Scanner scanner = new Scanner(file);
+            br = new BufferedReader(new FileReader(file));
 
-            while (scanner.hasNextLine()) {
-                String palabra = scanner.nextLine();
-                Palabra p = new Palabra(palabra);
-                palabras.add(p);
+            String palabra;
+            while((palabra = br.readLine()) != null) {
+                wordList.add(new Palabra(palabra));
             }
-
-            scanner.close();
-        } catch (FileNotFoundException e) {
+            br.close();
+        } catch (IOException e ) {
             e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        Collections.shuffle(wordList, new Random(10000));
+    }
 
-        // Mezclar aleatoriamente la lista de palabras
-        Collections.shuffle(palabras);
-
-        return palabras;
+    private List<Palabra> getLobbyWords(int rounds) {
+        List<Palabra> lobbyWords = new ArrayList<>();
+        Random r = new Random();
+        for(int i = 0; i<rounds; i++) {
+            int wordIndex = r.nextInt(wordList.size());
+            lobbyWords.add(wordList.get(wordIndex));
+        }
+        return lobbyWords;
     }
 
     @Override
@@ -58,6 +67,11 @@ public class LobbiesPersistencia implements LobbiesInterface {
     @Override
     public Palabra getPalabra(int round) {
         return lobby.getPalabraList().get(round);
+    }
+
+    @Override
+    public List<Palabra> getPalabras() throws PalabrasNotFoundException {
+        return lobby.getPalabraList();
     }
 
     @Override
@@ -79,6 +93,8 @@ public class LobbiesPersistencia implements LobbiesInterface {
         lobby.addPlayer(player);
     }
 
+
+    @Override
     public List<String> getMissingPlayers(String host) {
         List<String> allNicknames = playersNicknames();
         allNicknames.remove(host);

@@ -1,12 +1,13 @@
 package edu.eci.arsw.wordle.controllers;
 
-import edu.eci.arsw.wordle.model.Player;
-import edu.eci.arsw.wordle.persistence.PalabrasNotFoundException;
+import edu.eci.arsw.wordle.model.Palabra;
 import edu.eci.arsw.wordle.services.PalabraServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -31,6 +32,16 @@ public class PalabrasAPIController {
     public ResponseEntity<?> getWord(@PathVariable("round")  int round) {
         try{
             String data = palabraServices.getWord(round);
+            return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
+        } catch (Exception e){
+            return new ResponseEntity<>("No se encontro la palabra", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> getWord() {
+        try{
+            List<Palabra> data = palabraServices.getWords();
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
         } catch (Exception e){
             return new ResponseEntity<>("No se encontro la palabra", HttpStatus.NOT_FOUND);

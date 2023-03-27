@@ -6,6 +6,8 @@ import edu.eci.arsw.wordle.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PalabraServices {
 
@@ -27,6 +29,10 @@ public class PalabraServices {
 
     public String getWord(int round) throws PalabrasNotFoundException {
         return lobby.getPalabra(round).getText();
+    }
+
+    public List<Palabra> getWords() throws PalabrasNotFoundException {
+        return lobby.getPalabras();
     }
 
 }

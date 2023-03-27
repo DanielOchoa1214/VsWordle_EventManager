@@ -9,11 +9,9 @@ import java.util.List;
 public interface LobbiesInterface {
 
     Lobby getLobby();
-
     Palabra getPalabra(int round)  throws PalabrasNotFoundException;
-
+    List<Palabra> getPalabras() throws PalabrasNotFoundException;
     Player getPlayer(String nickname) throws PlayerNotFoundException;
-
     List<Player> getPlayers();
     void addPlayer(Player player);
     List<String> getMissingPlayers(String host);
