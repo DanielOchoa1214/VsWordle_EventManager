@@ -48,10 +48,20 @@ public class LobbyAPIController {
     }
 
     @GetMapping(value = "/players/missing")
-    public ResponseEntity<?> addPlayer(@RequestParam String host) {
+    public ResponseEntity<?> missingPlayers(@RequestParam String host) {
         try{
             List<String> missingPlayers = lobbyServices.getMissingPlayers(host);
             return new ResponseEntity<>(missingPlayers, HttpStatus.CREATED);
+        } catch (Exception e){
+            return new ResponseEntity<>("La petición no se pudo procesar", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping(value = "/startGame")
+    public ResponseEntity<?> missingPlayers() {
+        try{
+            Boolean success = lobbyServices.startGame();
+            return new ResponseEntity<>(success, HttpStatus.CREATED);
         } catch (Exception e){
             return new ResponseEntity<>("La petición no se pudo procesar", HttpStatus.NOT_FOUND);
         }

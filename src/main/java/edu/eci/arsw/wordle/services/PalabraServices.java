@@ -12,15 +12,15 @@ import java.util.List;
 public class PalabraServices {
 
     @Autowired
-    private LobbiesInterface lobby;
+    private LobbiesInterface lobbies;
 
-    public boolean provePalabra(String palabra, int round, String nickname) throws PalabrasNotFoundException, PlayerNotFoundException {
+    public boolean proveWord(String palabra, int round, String nickname) throws PalabrasNotFoundException, PlayerNotFoundException {
         Palabra wordInt = new Palabra(palabra);
-        Palabra word = lobby.getPalabra(round);
+        Palabra word = lobbies.getLobby(0).getPalabra(round);
         synchronized (word) {
-            if(!word.isTaken() && wordInt.equals(lobby.getPalabra(round))) {
+            if(!word.isTaken() && wordInt.equals(lobbies.getLobby(0).getPalabra(round))) {
                 word.setTaken(true);
-                lobby.getPlayer(nickname).addRoundWon();
+                lobbies.getLobby(0).getPlayer(nickname).addRoundWon();
                 return true;
             }
         }
@@ -28,11 +28,11 @@ public class PalabraServices {
     }
 
     public String getWord(int round) throws PalabrasNotFoundException {
-        return lobby.getPalabra(round).getText();
+        return lobbies.getLobby(0).getPalabra(round).getText();
     }
 
     public List<Palabra> getWords() throws PalabrasNotFoundException {
-        return lobby.getPalabras();
+        return lobbies.getLobby(0).getPalabras();
     }
 
 }

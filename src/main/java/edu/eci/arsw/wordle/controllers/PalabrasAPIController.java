@@ -18,10 +18,10 @@ public class PalabrasAPIController {
     @Autowired
     PalabraServices palabraServices = null;
 
-    @RequestMapping()
-    public ResponseEntity<?> proveLetter(@RequestParam String palabra, @RequestParam int round, @RequestParam String nickname) {
+    @RequestMapping(value = "/")
+    public ResponseEntity<?> proveWord(@RequestParam("palabra") String palabra, @RequestParam("round")  int round, @RequestParam("nickname") String nickname) {
         try{
-            boolean data = palabraServices.provePalabra(palabra, round, nickname);
+            boolean data = palabraServices.proveWord(palabra, round, nickname);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
         } catch (Exception e){
             return new ResponseEntity<>("No se encontro la letra", HttpStatus.NOT_FOUND);
@@ -39,7 +39,7 @@ public class PalabrasAPIController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getWord() {
+    public ResponseEntity<?> getWords() {
         try{
             List<Palabra> data = palabraServices.getWords();
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);

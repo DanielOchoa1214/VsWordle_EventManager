@@ -12,25 +12,31 @@ import java.util.List;
 public class LobbyServices {
 
     @Autowired
-    private LobbiesInterface lobby = null;
+    private LobbiesInterface lobbies;
 
     public boolean newLobby (Player host, int maxPlayers) {
+        //Posterior implementación
         return false;
     }
 
     public boolean addPlayer(Player player) {
-        return lobby.getLobby().addPlayer(player);
+        return lobbies.getLobby(0).addPlayer(player);
     }
 
     public Player getPlayer(String nickname) throws PlayerNotFoundException {
-        return lobby.getPlayer(nickname);
+        return lobbies.getLobby(0).getPlayer(nickname);
     }
 
-    public List<Player> getPlayerList() {
-        return lobby.getPlayers();
+    public List<Player> getPlayerList() throws PlayerNotFoundException {
+        return lobbies.getLobby(0).getPlayers();
     }
 
     public List<String> getMissingPlayers(String host) {
-        return lobby.getMissingPlayers(host);
+        return lobbies.getLobby(0).getMissingPlayers(host);
     }
+
+    public boolean startGame() {
+        return lobbies.getLobby(0).startGame();
+    }
+
 }
