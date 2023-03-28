@@ -1,6 +1,9 @@
 package edu.eci.arsw.wordle.controllers;
 
+import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Player;
+import edu.eci.arsw.wordle.persistence.LobbyException;
+import edu.eci.arsw.wordle.persistence.PlayerException;
 import edu.eci.arsw.wordle.services.LobbyServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +25,8 @@ public class LobbyAPIController {
         try{
             List<Player> data = lobbyServices.getPlayerList();
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
-        } catch (Exception e){
-            return new ResponseEntity<>("No se encontraron jugadores", HttpStatus.NOT_FOUND);
+        } catch (PlayerException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -32,8 +35,8 @@ public class LobbyAPIController {
         try{
             Player data = lobbyServices.getPlayer(nickname);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
-        } catch (Exception e){
-            return new ResponseEntity<>("No se encontro el jugador", HttpStatus.NOT_FOUND);
+        } catch (PlayerException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -42,8 +45,8 @@ public class LobbyAPIController {
         try{
             boolean success = lobbyServices.addPlayer(player);
             return new ResponseEntity<>(success, HttpStatus.CREATED);
-        } catch (Exception e){
-            return new ResponseEntity<>("El jugador no se pudo añadir", HttpStatus.NOT_FOUND);
+        } catch (LobbyException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -51,19 +54,39 @@ public class LobbyAPIController {
     public ResponseEntity<?> missingPlayers(@RequestParam String host) {
         try{
             List<String> missingPlayers = lobbyServices.getMissingPlayers(host);
-            return new ResponseEntity<>(missingPlayers, HttpStatus.CREATED);
+            return new ResponseEntity<>(missingPlayers, HttpStatus.FOUND);
         } catch (Exception e){
-            return new ResponseEntity<>("La petición no se pudo procesar", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Ocurrio algo, lo sentimos", HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping(value = "/startGame")
-    public ResponseEntity<?> missingPlayers() {
+    public ResponseEntity<?> startGame() {
         try{
             Boolean success = lobbyServices.startGame();
             return new ResponseEntity<>(success, HttpStatus.CREATED);
-        } catch (Exception e){
-            return new ResponseEntity<>("La petición no se pudo procesar", HttpStatus.NOT_FOUND);
+        } catch (LobbyException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(value = "/{idLobby}")
+    public ResponseEntity<?> getLobby(@PathVariable("idLobby") int idLobby) {
+        try{
+            Lobby lobby = lobbyServices.getLobby(idLobby);
+            return new ResponseEntity<>(lobby, HttpStatus.FOUND);
+        } catch (LobbyException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(value = "/winner")
+    public ResponseEntity<?> getLobbyWinner() {
+        try{
+            Player player = lobbyServices.getLobbyWinner();
+            return new ResponseEntity<>(player, HttpStatus.FOUND);
+        } catch (LobbyException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }

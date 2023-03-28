@@ -1,6 +1,7 @@
 package edu.eci.arsw.wordle.controllers;
 
 import edu.eci.arsw.wordle.model.Palabra;
+import edu.eci.arsw.wordle.persistence.PalabrasException;
 import edu.eci.arsw.wordle.services.PalabraServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +24,8 @@ public class PalabrasAPIController {
         try{
             boolean data = palabraServices.proveWord(palabra, round, nickname);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
-        } catch (Exception e){
-            return new ResponseEntity<>("No se encontro la letra", HttpStatus.NOT_FOUND);
+        } catch (PalabrasException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -33,8 +34,8 @@ public class PalabrasAPIController {
         try{
             String data = palabraServices.getWord(round);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
-        } catch (Exception e){
-            return new ResponseEntity<>("No se encontro la palabra", HttpStatus.NOT_FOUND);
+        } catch (PalabrasException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -44,7 +45,7 @@ public class PalabrasAPIController {
             List<Palabra> data = palabraServices.getWords();
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
         } catch (Exception e){
-            return new ResponseEntity<>("No se encontro la palabra", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Algo ocurrio, lo sentimos :(", HttpStatus.NOT_FOUND);
         }
     }
 }

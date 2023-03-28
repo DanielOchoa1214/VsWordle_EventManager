@@ -1,32 +1,76 @@
 package edu.eci.arsw.wordle.model;
 
-import edu.eci.arsw.wordle.persistence.PalabrasNotFoundException;
-import edu.eci.arsw.wordle.persistence.PlayerNotFoundException;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Lobby {
-    private boolean isClosed = false;
-    private final int maxPlayers;
-    private final List<Player> playerList;
-    private final List<Palabra> palabraList;
+    private static final String ARCHIVO_PALABRAS = "wordlist_spanish_fil.txt";
+    private static List<Palabra> wordList = null;
+    private AtomicBoolean isClosed = new AtomicBoolean(false);
+    private AtomicBoolean isFinished = new AtomicBoolean(false);
+    private List<Player> playerList;
+    private List<Palabra> palabraList;
     private int idLobby;
 
-    public Lobby(int id, int maxPlayers, List<Palabra> palabraList) {
+    public Lobby(int id, int maxRounds) {
+        setWordList();
         this.idLobby = id;
-        this.maxPlayers = maxPlayers;
         this.playerList = new ArrayList<>();
-        this.palabraList = palabraList;
+        this.palabraList = lobbyWords(maxRounds);
     }
 
-    private void setClosed() {
-        if(playerList.size() >= maxPlayers) {
-            isClosed = true;
+    private static void setWordList() {
+        if(wordList == null) {
+            wordList = new ArrayList<>();
+            BufferedReader br = null;
+            try {
+                File file = new File(ARCHIVO_PALABRAS);
+                br = new BufferedReader(new FileReader(file));
+
+                String palabra;
+                while((palabra = br.readLine()) != null) {
+                    wordList.add(new Palabra(palabra));
+                }
+                br.close();
+            } catch (IOException e ) {
+                e.printStackTrace();
+            } finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            Collections.shuffle(wordList, new Random(10000));
         }
     }
 
-    private boolean nicknameExists(Player player) {
+    private List<Palabra> lobbyWords(int rounds) {
+        List<Palabra> lobbyWords = new ArrayList<>();
+        Random r = new Random();
+        for(int i = 0; i<rounds; i++) {
+            int wordIndex = r.nextInt(wordList.size());
+            lobbyWords.add(wordList.get(wordIndex));
+        }
+        return lobbyWords;
+    }
+
+    private void setClosed() {
+        if(playerList.size() >= 5) {
+            isClosed.set(true);
+        }
+    }
+
+    public boolean nicknameExists(Player player) {
         return playersNicknames().contains(player.getNickname());
     }
 
@@ -40,44 +84,31 @@ public class Lobby {
 
     public boolean addPlayer(Player player) {
         synchronized (palabraList) {
-            System.out.println(!nicknameExists(player));
-            if (!isClosed && !nicknameExists(player)) {
-                playerList.add(player);
-                setClosed();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Palabra getPalabra(int round) throws PalabrasNotFoundException{
-        try {
-            return palabraList.get(round);
-        } catch (Exception e) {
-            throw new PalabrasNotFoundException("No se encontro la palabra");
+            playerList.add(player);
+            setClosed();
+            return true;
         }
     }
 
-    public List<Palabra> getPalabras() throws PalabrasNotFoundException {
-        try {
-            return palabraList;
-        } catch (Exception e) {
-            throw new PalabrasNotFoundException("No se encontraron las palabras");
-        }
+    public Palabra getPalabra(int round) {
+        return palabraList.get(round);
     }
 
-    public Player getPlayer(String nickname) throws PlayerNotFoundException {
+    public List<Palabra> getPalabras() {
+        return palabraList;
+    }
+
+    public Player getPlayer(String nickname) {
         for(Player player: playerList) {
             if(player.getNickname().equals(nickname)) {
                 return player;
             }
         }
-        throw new PlayerNotFoundException("No se econcontro el jugador");
+        return null;
     }
 
-    public List<Player> getPlayers() throws PlayerNotFoundException {
-        if (!playerList.isEmpty()) {return playerList;}
-        throw new PlayerNotFoundException("No se encontraron jugadores");
+    public List<Player> getPlayers() {
+        return playerList;
     }
 
     public List<String> getMissingPlayers(String host) {
@@ -87,16 +118,41 @@ public class Lobby {
     }
 
     public boolean startGame() {
-        if (!isClosed) {
-            isClosed = true;
-            return true;
+        if (!isClosed.get()) {
+            isClosed.set(true);
+            return isClosed.get();
         }
-        //ya inicio el juego
-        return false;
+        return isClosed.get();
     }
+
+    public Player lobbyWinner() {
+        Player playerWinner = new Player();
+        //no haya empezado la partida
+        for (Player player: playerList) {
+            if (player.getRoundsWon() > playerWinner.getRoundsWon()){
+                playerWinner = player;
+            }
+        }
+        return playerWinner;
+    }
+    //deletaplayer
+    //rest comprobar ganador de la sala, el player, get..., concurrencia
 
     public String toString() {
         return "id = " + idLobby;
     }
 
+    public int getIdLobby() {
+        return idLobby;
+    }
+
+    public void resetLobby() {
+        isClosed.set(false);
+        isFinished.set(false);
+        palabraList = lobbyWords(10);
+        playerList = new ArrayList<>();
+    }
+    public AtomicBoolean getIsFinished() {
+        return isFinished;
+    }
 }
