@@ -84,10 +84,13 @@ public class Lobby {
 
     public boolean addPlayer(Player player) {
         synchronized (palabraList) {
-            playerList.add(player);
-            setClosed();
-            return true;
+            if(!isClosed.get()) {
+                playerList.add(player);
+                setClosed();
+                return true;
+            }
         }
+        return false;
     }
 
     public Palabra getPalabra(int round) {
@@ -154,5 +157,9 @@ public class Lobby {
     }
     public AtomicBoolean getIsFinished() {
         return isFinished;
+    }
+
+    public AtomicBoolean getIsClosed() {
+        return isClosed;
     }
 }
