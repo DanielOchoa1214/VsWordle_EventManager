@@ -21,4 +21,9 @@ public class Player {
     public int getRoundsWon() {
         return roundsWon;
     }
+
+    @Override
+    public String toString() {
+        return "Nickname: " + nickname;
+    }
 }

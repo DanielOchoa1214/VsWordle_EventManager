@@ -1,6 +1,9 @@
 package edu.eci.arsw.wordle.controllers;
 
 import edu.eci.arsw.wordle.model.Player;
+import edu.eci.arsw.wordle.persistence.LobbiesInterface;
+import edu.eci.arsw.wordle.persistence.LobbyException;
+import edu.eci.arsw.wordle.services.LobbyServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,10 +24,13 @@ public class WebSocketHandler extends StompSessionHandlerAdapter {
     @Autowired
     SimpMessagingTemplate msgt;
 
+    @Autowired
+    private LobbyServices lobbyServices;
 
-    @MessageMapping("/joinGame")
-    public void handlePointEvent(Player player) throws Exception {
-        System.out.println("Nuevo punto recibido en el servidor!:"+player);
-        msgt.convertAndSend("/topic/joinGame", player);
+
+    @MessageMapping("/endGame")
+    public void handlePointEvent() throws Exception {
+        Player player = lobbyServices.getLobbyWinner();
+        msgt.convertAndSend("/topic/endGame", player);
     }
 }

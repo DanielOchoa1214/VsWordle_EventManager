@@ -54,7 +54,7 @@ public class LobbyAPIController {
     public ResponseEntity<?> missingPlayers(@RequestParam String host) {
         try{
             List<String> missingPlayers = lobbyServices.getMissingPlayers(host);
-            return new ResponseEntity<>(missingPlayers, HttpStatus.FOUND);
+            return new ResponseEntity<>(missingPlayers, HttpStatus.CREATED);
         } catch (Exception e){
             return new ResponseEntity<>("Ocurrio algo, lo sentimos", HttpStatus.NOT_FOUND);
         }
@@ -80,7 +80,7 @@ public class LobbyAPIController {
         }
     }
 
-    @GetMapping(value = "/winner")
+    /*@GetMapping(value = "/winner")
     public ResponseEntity<?> getLobbyWinner() {
         try{
             Player player = lobbyServices.getLobbyWinner();
@@ -88,5 +88,5 @@ public class LobbyAPIController {
         } catch (LobbyException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 }
