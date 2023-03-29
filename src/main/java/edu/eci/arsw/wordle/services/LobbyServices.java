@@ -32,6 +32,7 @@ public class LobbyServices {
     public boolean addPlayer(Player player) throws LobbyException {
         if(lobbies.getLobby(0).nicknameExists(player)) throw new LobbyException(LobbyException.PLAYER_EXISTS);
         if(lobbies.getLobby(0).getIsClosed().get()) throw new LobbyException(LobbyException.IS_CLOSED);
+        if(player.getNickname().equals("")) throw new LobbyException(LobbyException.EMPTY_NICK);
         return lobbies.getLobby(0).addPlayer(player);
     }
 

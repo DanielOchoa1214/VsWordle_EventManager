@@ -7,6 +7,8 @@ public class LobbyException extends Exception{
     public static String IS_NOT_FINISHED = "El lobby no ha terminado de jugar";
     public static String LOBBY_NOT_FOUND = "El lobby no se encontro";
 
+    public static String EMPTY_NICK = "Tu nickname no puede estar vacio :(";
+
     public LobbyException(String message) {
         super(message);
     }
