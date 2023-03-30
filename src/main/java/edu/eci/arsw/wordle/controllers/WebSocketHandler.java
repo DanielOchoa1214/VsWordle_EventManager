@@ -27,9 +27,13 @@ public class WebSocketHandler extends StompSessionHandlerAdapter {
     @Autowired
     private LobbyServices lobbyServices;
 
+    @MessageMapping("/startGame")
+    public void handleStartEvent() throws Exception {
+        lobbyServices.startGame();
+    }
 
     @MessageMapping("/endGame")
-    public void handlePointEvent() throws Exception {
+    public void handleEndEvent() throws Exception {
         Player player = lobbyServices.getLobbyWinner();
         msgt.convertAndSend("/topic/endGame", player);
     }
