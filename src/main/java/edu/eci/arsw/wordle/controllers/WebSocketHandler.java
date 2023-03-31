@@ -37,4 +37,10 @@ public class WebSocketHandler extends StompSessionHandlerAdapter {
         Player player = lobbyServices.getLobbyWinner();
         msgt.convertAndSend("/topic/endGame", player);
     }
+
+    @MessageMapping("/removePlayer")
+    public void handleRemovePlayerEvent(Player player) throws Exception {
+        lobbyServices.removePlayer(player);
+        msgt.convertAndSend("/topic/removePlayer", player);
+    }
 }

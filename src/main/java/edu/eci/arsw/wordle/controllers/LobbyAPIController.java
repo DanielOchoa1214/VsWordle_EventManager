@@ -80,6 +80,16 @@ public class LobbyAPIController {
         }
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> removePlayer(@RequestBody Player player){
+        try{
+            lobbyServices.removePlayer(player);
+            return new ResponseEntity<>(true, HttpStatus.FOUND);
+        } catch (PlayerException | LobbyException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     /*@GetMapping(value = "/winner")
     public ResponseEntity<?> getLobbyWinner() {
         try{
