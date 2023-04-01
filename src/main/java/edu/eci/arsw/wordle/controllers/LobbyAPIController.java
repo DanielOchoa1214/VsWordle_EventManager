@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -20,58 +21,28 @@ public class LobbyAPIController {
     @Autowired
     LobbyServices lobbyServices = null;
 
-    @GetMapping(value = "/players")
-    public ResponseEntity<?> getPlayers() {
+    @GetMapping()
+    public ResponseEntity<?> getLobbies() {
         try{
-            List<Player> data = lobbyServices.getPlayerList();
-            return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
-        } catch (PlayerException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @GetMapping(value = "/players/{nickname}")
-    public ResponseEntity<?> getPlayer(@PathVariable String nickname) {
-        try{
-            Player data = lobbyServices.getPlayer(nickname);
-            return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
-        } catch (PlayerException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PostMapping
-    public ResponseEntity<?> addPlayer(@RequestBody Player player) {
-        try{
-            boolean success = lobbyServices.addPlayer(player);
-            return new ResponseEntity<>(success, HttpStatus.CREATED);
-        } catch (LobbyException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-    }
-
-    @GetMapping(value = "/players/missing")
-    public ResponseEntity<?> missingPlayers(@RequestParam String host) {
-        try{
-            List<String> missingPlayers = lobbyServices.getMissingPlayers(host);
-            return new ResponseEntity<>(missingPlayers, HttpStatus.CREATED);
-        } catch (Exception e){
-            return new ResponseEntity<>("Ocurrio algo, lo sentimos", HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PutMapping(value = "/startGame")
-    public ResponseEntity<?> startGame() {
-        try{
-            Boolean success = lobbyServices.startGame();
-            return new ResponseEntity<>(success, HttpStatus.CREATED);
+            ConcurrentHashMap<String, Lobby> lobbies = lobbyServices.getLobbies();
+            return new ResponseEntity<>(lobbies, HttpStatus.FOUND);
         } catch (LobbyException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
+    @PostMapping
+    public ResponseEntity<?> newLobby(@RequestBody Player player) {
+        try{
+            String idLobby = lobbyServices.newLobby(player);
+            return new ResponseEntity<>(idLobby, HttpStatus.CREATED);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping(value = "/{idLobby}")
-    public ResponseEntity<?> getLobby(@PathVariable("idLobby") int idLobby) {
+    public ResponseEntity<?> getLobby(@PathVariable("idLobby") String idLobby) {
         try{
             Lobby lobby = lobbyServices.getLobby(idLobby);
             return new ResponseEntity<>(lobby, HttpStatus.FOUND);
@@ -80,23 +51,36 @@ public class LobbyAPIController {
         }
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> removePlayer(@RequestBody Player player){
-        try{
-            lobbyServices.removePlayer(player);
-            return new ResponseEntity<>(true, HttpStatus.FOUND);
-        } catch (PlayerException | LobbyException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    @PutMapping(value = "/{idLobby}/startGame")
+    public ResponseEntity<?> startGame(@PathVariable("idLobby") String idLobby) {
+        try {
+            Lobby lobby = lobbyServices.getLobby(idLobby);
+            Boolean success = lobbyServices.startGame(lobby);
+            return new ResponseEntity<>(success, HttpStatus.ACCEPTED);
+        } catch (LobbyException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
-    /*@GetMapping(value = "/winner")
-    public ResponseEntity<?> getLobbyWinner() {
+    @GetMapping(value = "/{idLobby}/winner")
+    public ResponseEntity<?> getLobbyWinner(@PathVariable("idLobby") String idLobby) {
         try{
-            Player player = lobbyServices.getLobbyWinner();
+            Lobby lobby = lobbyServices.getLobby(idLobby);
+            Player player = lobbyServices.getLobbyWinner(lobby);
             return new ResponseEntity<>(player, HttpStatus.FOUND);
         } catch (LobbyException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-    }*/
+    }
+
+    @GetMapping(value = "/{idLobby}/host")
+    public ResponseEntity<?> getHost(@PathVariable("idLobby") String idLobby){
+        try{
+            Lobby lobby = lobbyServices.getLobby(idLobby);
+            Player host = lobbyServices.getHost(lobby);
+            return new ResponseEntity<>(host, HttpStatus.FOUND);
+        } catch (LobbyException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -37,4 +37,5 @@ public class Player {
     private boolean equals(Player player){
         return this.nickname.equals(player.nickname);
     }
+
 }

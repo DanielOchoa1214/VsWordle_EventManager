@@ -1,5 +1,7 @@
 package edu.eci.arsw.wordle.model;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -17,11 +19,12 @@ public class Lobby {
     private AtomicBoolean isFinished = new AtomicBoolean(false);
     private List<Player> playerList;
     private List<Palabra> palabraList;
-    private int idLobby;
+    private String idLobby;
+    private Player host = null;
 
-    public Lobby(int id, int maxRounds) {
+    public Lobby(int maxRounds) {
         setWordList();
-        this.idLobby = id;
+        this.idLobby = generateIdLobby();
         this.playerList = new ArrayList<>();
         this.palabraList = lobbyWords(maxRounds);
     }
@@ -70,10 +73,6 @@ public class Lobby {
         }
     }
 
-    public boolean nicknameExists(Player player) {
-        return playersNicknames().contains(player.getNickname());
-    }
-
     private List<String> playersNicknames() {
         List<String> nicknames = new ArrayList<>();
         for (Player player: playerList) {
@@ -82,9 +81,18 @@ public class Lobby {
         return nicknames;
     }
 
+    private String generateIdLobby() {
+        return RandomStringUtils.randomAlphabetic(4).toLowerCase();
+    }
+
+    public boolean nicknameExists(Player player) {
+        return playersNicknames().contains(player.getNickname());
+    }
+
     public boolean addPlayer(Player player) {
         synchronized (palabraList) {
             if(!isClosed.get()) {
+                setHost(player);
                 playerList.add(player);
                 setClosed();
                 return true;
@@ -94,12 +102,11 @@ public class Lobby {
     }
 
     public void removePlayer(Player player){
-        synchronized (playerList){
+        synchronized (playerList) {
             playerList.remove(player);
-        }
-        if(playerList.isEmpty()){
-            System.out.println("HOLI");
-            resetLobby();
+            if(player.equals(host)) {
+                host = playerList.get(0);
+            }
         }
     }
 
@@ -148,28 +155,38 @@ public class Lobby {
         }
         return playerWinner;
     }
-    //deletaplayer
-    //rest comprobar ganador de la sala, el player, get..., concurrencia
 
     public String toString() {
         return "id = " + idLobby;
     }
 
-    public int getIdLobby() {
+    public String getIdLobby() {
         return idLobby;
     }
 
     public void resetLobby() {
+        host = null;
         isClosed.set(false);
         isFinished.set(false);
         palabraList = lobbyWords(10);
         playerList = new ArrayList<>();
     }
+
     public AtomicBoolean getIsFinished() {
         return isFinished;
     }
 
     public AtomicBoolean getIsClosed() {
         return isClosed;
+    }
+
+    public void setHost(Player host) {
+        if(this.host == null) {
+            this.host = host;
+        }
+    }
+
+    public Player getHost() {
+        return host;
     }
 }

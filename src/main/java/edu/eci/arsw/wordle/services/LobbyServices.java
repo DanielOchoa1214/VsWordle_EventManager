@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class LobbyServices {
@@ -16,55 +17,52 @@ public class LobbyServices {
     @Autowired
     private LobbiesInterface lobbies;
 
-    public boolean newLobby (Player host, int maxPlayers) {
-        //Posterior implementación
-        return false;
+    public String newLobby (Player player) throws  LobbyException{
+        if(player == null) throw new LobbyException(LobbyException.NOT_HOST);
+        return lobbies.addLobby(player);
     }
 
-    public Lobby getLobby(int idLobby) throws LobbyException {
-        try {
-            return lobbies.getLobby(idLobby);
-        } catch (IndexOutOfBoundsException e) {
-            throw new LobbyException(LobbyException.LOBBY_NOT_FOUND);
-        }
+    public Lobby getLobby(String idLobby) throws LobbyException {
+        if(lobbies.getLobby(idLobby) == null) throw new LobbyException(LobbyException.LOBBY_NOT_FOUND);
+        return lobbies.getLobby(idLobby);
     }
 
-    public boolean addPlayer(Player player) throws LobbyException {
-        if(lobbies.getLobby(0).nicknameExists(player)) throw new LobbyException(LobbyException.PLAYER_EXISTS);
-        if(lobbies.getLobby(0).getIsClosed().get()) throw new LobbyException(LobbyException.IS_CLOSED);
-        if(player.getNickname().equals("")) throw new LobbyException(LobbyException.EMPTY_NICK);
-        return lobbies.getLobby(0).addPlayer(player);
+    public ConcurrentHashMap<String, Lobby> getLobbies() throws LobbyException {
+        if(lobbies.getLobbies() == null) throw new LobbyException(LobbyException.LOBBY_NOT_FOUND);
+        return lobbies.getLobbies();
+    }
+    public boolean startGame(Lobby lobby) throws LobbyException {
+        if (!lobby.startGame()) throw new LobbyException(LobbyException.IS_CLOSED);
+        return lobby.startGame();
     }
 
-    public void removePlayer(Player player) throws LobbyException, PlayerException {
-        if(!lobbies.getLobby(0).nicknameExists(player)) throw new PlayerException(PlayerException.NOT_FOUND_PLAYER);
-        if(player.getNickname().equals("")) throw new LobbyException(LobbyException.EMPTY_NICK);
-        lobbies.getLobby(0).removePlayer(player);
-    }
-
-    public Player getPlayer(String nickname) throws PlayerException {
-        if(lobbies.getLobby(0).getPlayer(nickname) == null) throw new PlayerException(PlayerException.NOT_FOUND_PLAYER);
-        return lobbies.getLobby(0).getPlayer(nickname);
-    }
-
-    public List<Player> getPlayerList() throws PlayerException {
-        if(lobbies.getLobby(0).getPlayers().isEmpty())throw new PlayerException(PlayerException.NOT_FOUND_PLAYER);
-        return lobbies.getLobby(0).getPlayers();
-    }
-
-    public List<String> getMissingPlayers(String host) {
-        return lobbies.getLobby(0).getMissingPlayers(host);
-    }
-
-    public boolean startGame() throws LobbyException{
-        if (!lobbies.getLobby(0).startGame()) throw new LobbyException(LobbyException.IS_CLOSED);
-        return lobbies.getLobby(0).startGame();
-    }
-
-    public Player getLobbyWinner() throws LobbyException {
-        if(lobbies.getLobby(0).getIsFinished().get()) throw new LobbyException(LobbyException.IS_NOT_FINISHED);
-        Player playerWinner = lobbies.getLobby(0).lobbyWinner();
-        lobbies.resetLobby(0);
+    public Player getLobbyWinner(Lobby lobby) throws LobbyException {
+        if(lobby.getIsFinished().get()) throw new LobbyException(LobbyException.IS_NOT_FINISHED);
+        Player playerWinner = lobby.lobbyWinner();
+        lobbies.resetLobby(lobby.getIdLobby());
+        deleteLobby(lobby);
         return playerWinner;
+    }
+
+    public Player getHost(Lobby lobby) {
+        return lobby.getHost();
+    }
+
+    private void deleteLobby(Lobby lobby) {
+        int players = lobbies.getLobby(lobby.getIdLobby()).getPlayers().size();
+        setTimeout(() -> {
+            int playersAfter = lobbies.getLobby(lobby.getIdLobby()).getPlayers().size();
+            if(players == playersAfter) {
+                lobbies.deleteLobby(lobby.getIdLobby());
+            }
+        }, 10000);
+    }
+    private void setTimeout(Runnable runnable, int delay){
+        new Thread(() -> {
+            try { Thread.sleep(delay); runnable.run();
+            } catch (Exception e){
+                System.err.println(e);
+            }
+        }).start();
     }
 }

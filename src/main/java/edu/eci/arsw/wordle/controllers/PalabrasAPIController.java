@@ -1,7 +1,10 @@
 package edu.eci.arsw.wordle.controllers;
 
+import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Palabra;
+import edu.eci.arsw.wordle.persistence.LobbyException;
 import edu.eci.arsw.wordle.persistence.PalabrasException;
+import edu.eci.arsw.wordle.services.LobbyServices;
 import edu.eci.arsw.wordle.services.PalabraServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,39 +16,46 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/palabras")
+@RequestMapping(value = "/lobbies/{idLobby}/palabras")
 public class PalabrasAPIController {
 
     @Autowired
     PalabraServices palabraServices = null;
+    @Autowired
+    LobbyServices lobbyServices = null;
 
-    @RequestMapping(value = "/")
-    public ResponseEntity<?> proveWord(@RequestParam("palabra") String palabra, @RequestParam("round")  int round, @RequestParam("nickname") String nickname) {
-        try{
-            boolean data = palabraServices.proveWord(palabra, round, nickname);
+    @RequestMapping()
+    public ResponseEntity<?> proveWord(@RequestParam("palabra") String palabra, @RequestParam("round")  int round, @RequestParam("nickname") String nickname, @PathVariable("idLobby") String idLobby) {
+        try {
+            System.out.println("here");
+            Lobby lobby = lobbyServices.getLobby(idLobby);
+            boolean data = palabraServices.proveWord(palabra, round, nickname, lobby);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
-        } catch (PalabrasException e){
+        } catch (PalabrasException | LobbyException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping(value = "/{round}")
-    public ResponseEntity<?> getWord(@PathVariable("round")  int round) {
+    public ResponseEntity<?> getWord(@PathVariable("round")  int round, @PathVariable("idLobby") String idLobby) {
         try{
-            String data = palabraServices.getWord(round);
+            Lobby lobby = lobbyServices.getLobby(idLobby);
+            String data = palabraServices.getWord(round, lobby);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
-        } catch (PalabrasException e){
+        } catch (PalabrasException | LobbyException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping()
-    public ResponseEntity<?> getWords() {
+    /*@GetMapping()
+    public ResponseEntity<?> getWords(@PathVariable("idLobby") String idLobby) {
         try{
-            List<Palabra> data = palabraServices.getWords();
+            System.out.println("get Words");
+            Lobby lobby = lobbyServices.getLobby(idLobby);
+            List<Palabra> data = palabraServices.getWords(lobby);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
         } catch (Exception e){
             return new ResponseEntity<>("Algo ocurrio, lo sentimos :(", HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 }

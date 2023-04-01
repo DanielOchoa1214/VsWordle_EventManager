@@ -1,5 +1,6 @@
 package edu.eci.arsw.wordle.services;
 
+import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Palabra;
 import edu.eci.arsw.wordle.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +14,13 @@ public class PalabraServices {
     @Autowired
     private LobbiesInterface lobbies;
 
-    public boolean proveWord(String palabra, int round, String nickname) throws PalabrasException {
+    public boolean proveWord(String palabra, int round, String nickname, Lobby lobby) throws PalabrasException {
         Palabra wordInt = new Palabra(palabra);
-        Palabra word = lobbies.getLobby(0).getPalabra(round);
+        Palabra word = lobby.getPalabra(round);
         synchronized (word) {
-            if(!word.isTaken() && wordInt.equals(lobbies.getLobby(0).getPalabra(round))) {
+            if(!word.isTaken() && wordInt.equals(lobby.getPalabra(round))) {
                 word.setTaken(true);
-                lobbies.getLobby(0).getPlayer(nickname).addRoundWon();
+                lobby.getPlayer(nickname).addRoundWon();
                 return true;
             }
         }
@@ -27,16 +28,16 @@ public class PalabraServices {
         //retornar la siguiente palabra
     }
 
-    public String getWord(int round) throws PalabrasException {
+    public String getWord(int round, Lobby lobby) throws PalabrasException {
         try {
-            return lobbies.getLobby(0).getPalabra(round).getText();
+            return lobby.getPalabra(round).getText();
         } catch (IndexOutOfBoundsException e) {
             throw new PalabrasException(PalabrasException.NOT_FOUND_PALABRA);
         }
     }
 
-    public List<Palabra> getWords() {
-        return lobbies.getLobby(0).getPalabras();
+    public List<Palabra> getWords(Lobby lobby) {
+        return lobby.getPalabras();
     }
 
 }

@@ -4,6 +4,7 @@ import edu.eci.arsw.wordle.model.Player;
 import edu.eci.arsw.wordle.persistence.LobbiesInterface;
 import edu.eci.arsw.wordle.persistence.LobbyException;
 import edu.eci.arsw.wordle.services.LobbyServices;
+import edu.eci.arsw.wordle.services.PlayerServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -26,21 +27,23 @@ public class WebSocketHandler extends StompSessionHandlerAdapter {
 
     @Autowired
     private LobbyServices lobbyServices;
+    @Autowired
+    private PlayerServices playerServices;
 
-    @MessageMapping("/startGame")
-    public void handleStartEvent() throws Exception {
-        lobbyServices.startGame();
+    @MessageMapping("/startGame.{idLobby}")
+    public void handleStartEvent(@DestinationVariable String idLobby) throws Exception {
+        lobbyServices.startGame(lobbyServices.getLobby(idLobby));
     }
 
-    @MessageMapping("/endGame")
-    public void handleEndEvent() throws Exception {
-        Player player = lobbyServices.getLobbyWinner();
+    @MessageMapping("/endGame.{idLobby}")
+    public void handleEndEvent(@DestinationVariable String idLobby) throws Exception {
+        Player player = lobbyServices.getLobbyWinner(lobbyServices.getLobby(idLobby));
         msgt.convertAndSend("/topic/endGame", player);
     }
 
-    @MessageMapping("/removePlayer")
-    public void handleRemovePlayerEvent(Player player) throws Exception {
-        lobbyServices.removePlayer(player);
+    @MessageMapping("/removePlayer.{idLobby}")
+    public void handleRemovePlayerEvent(Player player, @DestinationVariable String idLobby) throws Exception {
+        playerServices.removePlayer(player, lobbyServices.getLobby(idLobby));
         msgt.convertAndSend("/topic/removePlayer", player);
     }
 }

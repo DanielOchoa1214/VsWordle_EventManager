@@ -5,12 +5,14 @@ import edu.eci.arsw.wordle.model.Player;
 
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface LobbiesInterface {
 
-    Lobby getLobby(int idLobby);
-    void addLobby();
-    List<Lobby> getLobbies();
-    void resetLobby(int idLobby);
+    Lobby getLobby(String idLobby);
+    ConcurrentHashMap<String, Lobby> getLobbies();
+    String addLobby(Player player);
+    void resetLobby(String idLobby);
+    void deleteLobby(String idLobby);
 
 }
