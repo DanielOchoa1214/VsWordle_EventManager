@@ -93,6 +93,16 @@ public class Lobby {
         return false;
     }
 
+    public void removePlayer(Player player){
+        synchronized (playerList){
+            playerList.remove(player);
+        }
+        if(playerList.isEmpty()){
+            System.out.println("HOLI");
+            resetLobby();
+        }
+    }
+
     public Palabra getPalabra(int round) {
         return palabraList.get(round);
     }

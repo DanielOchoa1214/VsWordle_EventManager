@@ -36,6 +36,12 @@ public class LobbyServices {
         return lobbies.getLobby(0).addPlayer(player);
     }
 
+    public void removePlayer(Player player) throws LobbyException, PlayerException {
+        if(!lobbies.getLobby(0).nicknameExists(player)) throw new PlayerException(PlayerException.NOT_FOUND_PLAYER);
+        if(player.getNickname().equals("")) throw new LobbyException(LobbyException.EMPTY_NICK);
+        lobbies.getLobby(0).removePlayer(player);
+    }
+
     public Player getPlayer(String nickname) throws PlayerException {
         if(lobbies.getLobby(0).getPlayer(nickname) == null) throw new PlayerException(PlayerException.NOT_FOUND_PLAYER);
         return lobbies.getLobby(0).getPlayer(nickname);
