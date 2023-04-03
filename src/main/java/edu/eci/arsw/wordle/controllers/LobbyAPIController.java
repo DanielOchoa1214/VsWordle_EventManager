@@ -78,7 +78,7 @@ public class LobbyAPIController {
         try{
             Lobby lobby = lobbyServices.getLobby(idLobby);
             Player host = lobbyServices.getHost(lobby);
-            return new ResponseEntity<>(host, HttpStatus.FOUND);
+            return new ResponseEntity<>(host, HttpStatus.ACCEPTED);
         } catch (LobbyException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

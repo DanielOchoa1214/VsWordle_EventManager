@@ -13,9 +13,9 @@ public class LobbiesPersistencia implements LobbiesInterface {
 
     private ConcurrentHashMap<String, Lobby> lobbies =  new ConcurrentHashMap<>();
 
-    /*public LobbiesPersistencia() {
+    public LobbiesPersistencia() {
         lobbies.put("test", new Lobby(10));
-    }*/
+    }
 
     private boolean isIdLobbyNoRepeat(Lobby lobby) {
         return lobbies.containsKey((String) lobby.getIdLobby());

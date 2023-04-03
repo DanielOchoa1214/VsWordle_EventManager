@@ -38,12 +38,12 @@ public class WebSocketHandler extends StompSessionHandlerAdapter {
     @MessageMapping("/endGame.{idLobby}")
     public void handleEndEvent(@DestinationVariable String idLobby) throws Exception {
         Player player = lobbyServices.getLobbyWinner(lobbyServices.getLobby(idLobby));
-        msgt.convertAndSend("/topic/endGame", player);
+        msgt.convertAndSend("/topic/endGame." + idLobby, player);
     }
 
     @MessageMapping("/removePlayer.{idLobby}")
     public void handleRemovePlayerEvent(Player player, @DestinationVariable String idLobby) throws Exception {
         playerServices.removePlayer(player, lobbyServices.getLobby(idLobby));
-        msgt.convertAndSend("/topic/removePlayer", player);
+        msgt.convertAndSend("/topic/removePlayer." + idLobby, player);
     }
 }

@@ -55,11 +55,14 @@ public class LobbyServices {
             if(players == playersAfter) {
                 lobbies.deleteLobby(lobby.getIdLobby());
             }
-        }, 10000);
+        }, 300000);
     }
+
     private void setTimeout(Runnable runnable, int delay){
         new Thread(() -> {
-            try { Thread.sleep(delay); runnable.run();
+            try {
+                Thread.sleep(delay);
+                runnable.run();
             } catch (Exception e){
                 System.err.println(e);
             }

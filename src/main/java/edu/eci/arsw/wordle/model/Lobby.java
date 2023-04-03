@@ -105,7 +105,12 @@ public class Lobby {
         synchronized (playerList) {
             playerList.remove(player);
             if(player.equals(host)) {
-                host = playerList.get(0);
+                try {
+                    host = playerList.get(0);
+                } catch (IndexOutOfBoundsException e) {
+                    resetLobby();
+                    throw e;
+                }
             }
         }
     }

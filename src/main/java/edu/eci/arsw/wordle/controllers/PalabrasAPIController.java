@@ -27,7 +27,6 @@ public class PalabrasAPIController {
     @RequestMapping()
     public ResponseEntity<?> proveWord(@RequestParam("palabra") String palabra, @RequestParam("round")  int round, @RequestParam("nickname") String nickname, @PathVariable("idLobby") String idLobby) {
         try {
-            System.out.println("here");
             Lobby lobby = lobbyServices.getLobby(idLobby);
             boolean data = palabraServices.proveWord(palabra, round, nickname, lobby);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
