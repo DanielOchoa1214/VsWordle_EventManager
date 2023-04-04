@@ -20,6 +20,7 @@ public class LobbyServices {
 
     public String newLobby (Player player) throws  LobbyException{
         if(player == null) throw new LobbyException(LobbyException.NOT_HOST);
+        if(player.getNickname().equals("")) throw new LobbyException(LobbyException.NOT_HOST);
         return lobbies.addLobby(player);
     }
 

@@ -40,7 +40,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Nickname: " + nickname;
+        return "Nickname: " + nickname + " Puntos: " + roundsWon;
     }
 
     @Override

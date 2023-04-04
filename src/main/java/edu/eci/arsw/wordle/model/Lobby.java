@@ -193,7 +193,8 @@ public class Lobby {
     }
 
     public List<Player> statistics() {
-        playerList.sort(Comparator.comparing(Player::getRoundsWon).reversed());
-        return playerList;
+        List<Player> copy = new ArrayList<>(playerList);
+        copy.sort(Comparator.comparing(Player::getRoundsWon).reversed());
+        return copy;
     }
 }
