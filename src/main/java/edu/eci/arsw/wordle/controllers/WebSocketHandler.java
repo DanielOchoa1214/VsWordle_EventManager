@@ -1,5 +1,6 @@
 package edu.eci.arsw.wordle.controllers;
 
+import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Player;
 import edu.eci.arsw.wordle.persistence.LobbiesInterface;
 import edu.eci.arsw.wordle.persistence.LobbyException;
@@ -37,13 +38,25 @@ public class WebSocketHandler extends StompSessionHandlerAdapter {
 
     @MessageMapping("/endGame.{idLobby}")
     public void handleEndEvent(@DestinationVariable String idLobby) throws Exception {
-        Player player = lobbyServices.getLobbyWinner(lobbyServices.getLobby(idLobby));
-        msgt.convertAndSend("/topic/endGame." + idLobby, player);
+        List<Player> sortPlayers = lobbyServices.getLobbyWinner(lobbyServices.getLobby(idLobby));
+        msgt.convertAndSend("/topic/endGame." + idLobby, sortPlayers);
     }
 
     @MessageMapping("/removePlayer.{idLobby}")
     public void handleRemovePlayerEvent(Player player, @DestinationVariable String idLobby) throws Exception {
         playerServices.removePlayer(player, lobbyServices.getLobby(idLobby));
         msgt.convertAndSend("/topic/removePlayer." + idLobby, player);
+    }
+
+    @MessageMapping("/wrongLetter.{idLobby}")
+    public void handleWrongLetterEvent(Player player, @DestinationVariable String idLobby) throws Exception {
+        Player playerLobby = lobbyServices.getLobby(idLobby).getPlayer(player.getNickname());
+        playerLobby.addWrongLetter();
+    }
+
+    @MessageMapping("/correctLetter.{idLobby}")
+    public void handleCorrectLetterEvent(Player player, @DestinationVariable String idLobby) throws Exception {
+        Player playerLobby = lobbyServices.getLobby(idLobby).getPlayer(player.getNickname());
+        playerLobby.addCorrectLetter();
     }
 }

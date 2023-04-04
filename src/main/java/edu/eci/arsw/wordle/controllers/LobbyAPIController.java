@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -24,7 +25,7 @@ public class LobbyAPIController {
     @GetMapping()
     public ResponseEntity<?> getLobbies() {
         try{
-            ConcurrentHashMap<String, Lobby> lobbies = lobbyServices.getLobbies();
+            ConcurrentMap<String, Lobby> lobbies = lobbyServices.getLobbies();
             return new ResponseEntity<>(lobbies, HttpStatus.FOUND);
         } catch (LobbyException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -66,8 +67,8 @@ public class LobbyAPIController {
     public ResponseEntity<?> getLobbyWinner(@PathVariable("idLobby") String idLobby) {
         try{
             Lobby lobby = lobbyServices.getLobby(idLobby);
-            Player player = lobbyServices.getLobbyWinner(lobby);
-            return new ResponseEntity<>(player, HttpStatus.FOUND);
+            List<Player> sortPlayers = lobbyServices.getLobbyWinner(lobby);
+            return new ResponseEntity<>(sortPlayers, HttpStatus.FOUND);
         } catch (LobbyException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -83,4 +84,15 @@ public class LobbyAPIController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    /*@GetMapping(value = "/{idLobby}/statistics")
+    public ResponseEntity<?> getStatistics(@PathVariable("idLobby") String idLobby){
+        try {
+            Lobby lobby = lobbyServices.getLobby(idLobby);
+            List<Player> sortPlayers = lobbyServices.getStatistics(lobby);
+            return new ResponseEntity<>(sortPlayers, HttpStatus.ACCEPTED);
+        } catch (LobbyException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }*/
 }

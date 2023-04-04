@@ -6,20 +6,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Lobby {
     private static final String ARCHIVO_PALABRAS = "wordlist_spanish_fil.txt";
     private static List<Palabra> wordList = null;
-    private AtomicBoolean isClosed = new AtomicBoolean(false);
-    private AtomicBoolean isFinished = new AtomicBoolean(false);
+    private final AtomicBoolean isClosed = new AtomicBoolean(false);
+    private final AtomicBoolean isFinished = new AtomicBoolean(false);
     private List<Player> playerList;
     private List<Palabra> palabraList;
-    private String idLobby;
+    private final String idLobby;
     private Player host = null;
 
     public Lobby(int maxRounds) {
@@ -193,5 +190,10 @@ public class Lobby {
 
     public Player getHost() {
         return host;
+    }
+
+    public List<Player> statistics() {
+        playerList.sort(Comparator.comparing(Player::getRoundsWon).reversed());
+        return playerList;
     }
 }

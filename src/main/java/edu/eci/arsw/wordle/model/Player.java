@@ -5,6 +5,8 @@ import java.util.Objects;
 public class Player {
     private String nickname;
     private int roundsWon = 0;
+    private int wrongLetters;
+    private int correctLetters;
 
     public Player(String nickname){
         this.nickname = nickname;
@@ -24,6 +26,18 @@ public class Player {
         return roundsWon;
     }
 
+    public void addWrongLetter() {wrongLetters++;}
+
+    public void addCorrectLetter() {correctLetters++;}
+
+    public int getCorrectLetters() {
+        return correctLetters;
+    }
+
+    public int getWrongLetters() {
+        return wrongLetters;
+    }
+
     @Override
     public String toString() {
         return "Nickname: " + nickname;
@@ -37,5 +51,4 @@ public class Player {
     private boolean equals(Player player){
         return this.nickname.equals(player.nickname);
     }
-
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class LobbyServices {
@@ -27,7 +28,7 @@ public class LobbyServices {
         return lobbies.getLobby(idLobby);
     }
 
-    public ConcurrentHashMap<String, Lobby> getLobbies() throws LobbyException {
+    public ConcurrentMap<String, Lobby> getLobbies() throws LobbyException {
         if(lobbies.getLobbies() == null) throw new LobbyException(LobbyException.LOBBY_NOT_FOUND);
         return lobbies.getLobbies();
     }
@@ -36,12 +37,12 @@ public class LobbyServices {
         return lobby.startGame();
     }
 
-    public Player getLobbyWinner(Lobby lobby) throws LobbyException {
+    public List<Player> getLobbyWinner(Lobby lobby) throws LobbyException {
         if(lobby.getIsFinished().get()) throw new LobbyException(LobbyException.IS_NOT_FINISHED);
-        Player playerWinner = lobby.lobbyWinner();
+        List<Player> sortPlayers = lobby.statistics();
         lobbies.resetLobby(lobby.getIdLobby());
         deleteLobby(lobby);
-        return playerWinner;
+        return sortPlayers;
     }
 
     public Player getHost(Lobby lobby) {
