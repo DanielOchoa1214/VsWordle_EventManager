@@ -2,8 +2,6 @@ package edu.eci.arsw.wordle.controllers;
 
 import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Player;
-import edu.eci.arsw.wordle.persistence.LobbiesInterface;
-import edu.eci.arsw.wordle.persistence.LobbyException;
 import edu.eci.arsw.wordle.services.LobbyServices;
 import edu.eci.arsw.wordle.services.PlayerServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +11,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.stereotype.Controller;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 @Controller
 public class WebSocketHandler extends StompSessionHandlerAdapter {
@@ -50,13 +43,13 @@ public class WebSocketHandler extends StompSessionHandlerAdapter {
 
     @MessageMapping("/wrongLetter.{idLobby}")
     public void handleWrongLetterEvent(Player player, @DestinationVariable String idLobby) throws Exception {
-        Player playerLobby = lobbyServices.getLobby(idLobby).getPlayer(player.getNickname());
-        playerLobby.addWrongLetter();
+        Lobby lobby = lobbyServices.getLobby(idLobby);
+        playerServices.addWrongLetter(lobby, player);
     }
 
     @MessageMapping("/correctLetter.{idLobby}")
     public void handleCorrectLetterEvent(Player player, @DestinationVariable String idLobby) throws Exception {
-        Player playerLobby = lobbyServices.getLobby(idLobby).getPlayer(player.getNickname());
-        playerLobby.addCorrectLetter();
+        Lobby lobby = lobbyServices.getLobby(idLobby);
+        playerServices.addCorrectLetter(lobby, player);
     }
 }

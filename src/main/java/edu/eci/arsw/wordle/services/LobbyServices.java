@@ -3,13 +3,11 @@ package edu.eci.arsw.wordle.services;
 import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Player;
 import edu.eci.arsw.wordle.persistence.LobbiesInterface;
-import edu.eci.arsw.wordle.persistence.LobbyException;
-import edu.eci.arsw.wordle.persistence.PlayerException;
+import edu.eci.arsw.wordle.persistence.exceptions.LobbyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @Service
@@ -35,13 +33,15 @@ public class LobbyServices {
     }
     public boolean startGame(Lobby lobby) throws LobbyException {
         if (!lobby.startGame()) throw new LobbyException(LobbyException.IS_CLOSED);
-        return lobby.startGame();
+        boolean started = lobby.startGame();
+        lobbies.updateLobby(lobby);
+        return started;
     }
 
     public List<Player> getLobbyWinner(Lobby lobby) throws LobbyException {
         if(lobby.getIsFinished().get()) throw new LobbyException(LobbyException.IS_NOT_FINISHED);
         List<Player> sortPlayers = lobby.statistics();
-        lobbies.resetLobby(lobby.getIdLobby());
+        lobbies.resetLobby(lobby.getId());
         deleteLobby(lobby);
         return sortPlayers;
     }
@@ -51,11 +51,10 @@ public class LobbyServices {
     }
 
     private void deleteLobby(Lobby lobby) {
-        int players = lobbies.getLobby(lobby.getIdLobby()).getPlayers().size();
         setTimeout(() -> {
-            int playersAfter = lobbies.getLobby(lobby.getIdLobby()).getPlayers().size();
-            if(players == playersAfter) {
-                lobbies.deleteLobby(lobby.getIdLobby());
+            int playersAfter = lobbies.getLobby(lobby.getId()).getPlayers().size();
+            if(playersAfter == 0) {
+                lobbies.deleteLobby(lobby.getId());
             }
         }, 300000);
     }

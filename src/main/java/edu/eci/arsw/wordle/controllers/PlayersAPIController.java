@@ -2,8 +2,8 @@ package edu.eci.arsw.wordle.controllers;
 
 import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Player;
-import edu.eci.arsw.wordle.persistence.LobbyException;
-import edu.eci.arsw.wordle.persistence.PlayerException;
+import edu.eci.arsw.wordle.persistence.exceptions.LobbyException;
+import edu.eci.arsw.wordle.persistence.exceptions.PlayerException;
 import edu.eci.arsw.wordle.services.LobbyServices;
 import edu.eci.arsw.wordle.services.PlayerServices;
 import org.springframework.beans.factory.annotation.Autowired;

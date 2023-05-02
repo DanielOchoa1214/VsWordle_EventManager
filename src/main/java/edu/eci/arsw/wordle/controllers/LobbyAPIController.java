@@ -2,8 +2,7 @@ package edu.eci.arsw.wordle.controllers;
 
 import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Player;
-import edu.eci.arsw.wordle.persistence.LobbyException;
-import edu.eci.arsw.wordle.persistence.PlayerException;
+import edu.eci.arsw.wordle.persistence.exceptions.LobbyException;
 import edu.eci.arsw.wordle.services.LobbyServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @RestController

@@ -3,6 +3,7 @@ package edu.eci.arsw.wordle.services;
 import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Palabra;
 import edu.eci.arsw.wordle.persistence.*;
+import edu.eci.arsw.wordle.persistence.exceptions.PalabrasException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class PalabraServices {
             if(!word.isTaken() && wordInt.equals(lobby.getPalabra(round))) {
                 word.setTaken(true);
                 lobby.getPlayer(nickname).addRoundWon();
+                lobbies.updateLobby(lobby);
                 return true;
             }
         }

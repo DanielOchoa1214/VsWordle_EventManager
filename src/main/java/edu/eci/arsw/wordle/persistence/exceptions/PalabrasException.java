@@ -1,4 +1,4 @@
-package edu.eci.arsw.wordle.persistence;
+package edu.eci.arsw.wordle.persistence.exceptions;
 
 public class PalabrasException extends Exception{
 

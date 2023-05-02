@@ -3,22 +3,20 @@ package edu.eci.arsw.wordle.persistence.impl;
 import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Player;
 import edu.eci.arsw.wordle.persistence.LobbiesInterface;
-import org.springframework.stereotype.Service;
 
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
-public class LobbiesPersistencia implements LobbiesInterface {
+// @Service
+public class PersistenciaLocal implements LobbiesInterface {
 
     private ConcurrentHashMap<String, Lobby> lobbies =  new ConcurrentHashMap<>();
 
-    public LobbiesPersistencia() {
-        lobbies.put("test", new Lobby(10));
+    public PersistenciaLocal() {
+        lobbies.put("test", new Lobby());
     }
 
-    private boolean isIdLobbyNoRepeat(Lobby lobby) {
-        return lobbies.containsKey((String) lobby.getIdLobby());
+    private boolean isIdRepeated(Lobby lobby) {
+        return lobbies.containsKey(lobby.getId());
     }
 
     @Override
@@ -28,12 +26,12 @@ public class LobbiesPersistencia implements LobbiesInterface {
 
     @Override
     public String addLobby(Player player) {
-        Lobby lobby = new Lobby(10);
-        if(!isIdLobbyNoRepeat(lobby)) {
+        Lobby lobby = new Lobby();
+        if(!isIdRepeated(lobby)) {
             lobby.setHost(player);
             lobby.addPlayer(player);
-            lobbies.put(lobby.getIdLobby(), lobby);
-            return lobby.getIdLobby();
+            lobbies.put(lobby.getId(), lobby);
+            return lobby.getId();
         } else {
             return addLobby(player);
         }
@@ -52,5 +50,10 @@ public class LobbiesPersistencia implements LobbiesInterface {
     @Override
     public void deleteLobby(String idLobby) {
         lobbies.remove(idLobby);
+    }
+
+    @Override
+    public void updateLobby(Lobby newLobby) {
+        lobbies.put(newLobby.getId(), newLobby);
     }
 }

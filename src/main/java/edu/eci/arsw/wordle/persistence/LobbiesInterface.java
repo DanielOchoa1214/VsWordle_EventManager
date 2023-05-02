@@ -14,5 +14,6 @@ public interface LobbiesInterface {
     String addLobby(Player player);
     void resetLobby(String idLobby);
     void deleteLobby(String idLobby);
+    void updateLobby(Lobby newLobby);
 
 }
