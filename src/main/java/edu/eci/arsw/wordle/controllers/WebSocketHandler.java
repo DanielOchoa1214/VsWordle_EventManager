@@ -1,9 +1,7 @@
 package edu.eci.arsw.wordle.controllers;
 
-import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Player;
-import edu.eci.arsw.wordle.services.LobbyServices;
-import edu.eci.arsw.wordle.services.PlayerServices;
+import edu.eci.arsw.wordle.services.EventServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,41 +19,37 @@ public class WebSocketHandler extends StompSessionHandlerAdapter {
     @Autowired
     SimpMessagingTemplate msgt;
     @Autowired
-    private LobbyServices lobbyServices;
-    @Autowired
-    private PlayerServices playerServices;
+    private EventServices eventServices;
 
     @MessageMapping("/startGame.{idLobby}")
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void handleStartEvent(@DestinationVariable String idLobby) throws Exception {
-        lobbyServices.startGame(lobbyServices.getLobby(idLobby));
+        eventServices.startGame(idLobby);
     }
 
     @MessageMapping("/endGame.{idLobby}")
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void handleEndEvent(@DestinationVariable String idLobby) throws Exception {
-        List<Player> sortPlayers = lobbyServices.getLobbyWinner(lobbyServices.getLobby(idLobby));
+        List<Player> sortPlayers = eventServices.endGame(idLobby);
         msgt.convertAndSend("/topic/endGame." + idLobby, sortPlayers);
     }
 
     @MessageMapping("/removePlayer.{idLobby}")
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void handleRemovePlayerEvent(Player player, @DestinationVariable String idLobby) throws Exception {
-        playerServices.removePlayer(player, lobbyServices.getLobby(idLobby));
+        eventServices.removePlayer(idLobby, player);
         msgt.convertAndSend("/topic/removePlayer." + idLobby, player);
     }
 
     @MessageMapping("/wrongLetter.{idLobby}")
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void handleWrongLetterEvent(Player player, @DestinationVariable String idLobby) throws Exception {
-        Lobby lobby = lobbyServices.getLobby(idLobby);
-        playerServices.addWrongLetter(lobby, player);
+        eventServices.addWrongLetter(idLobby, player);
     }
 
     @MessageMapping("/correctLetter.{idLobby}")
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void handleCorrectLetterEvent(Player player, @DestinationVariable String idLobby) throws Exception {
-        Lobby lobby = lobbyServices.getLobby(idLobby);
-        playerServices.addCorrectLetter(lobby, player);
+        eventServices.addCorrectLetter(idLobby, player);
     }
 }

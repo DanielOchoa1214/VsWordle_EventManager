@@ -1,7 +1,5 @@
 package edu.eci.arsw.wordle.model;
 
-import java.util.Objects;
-
 public class Palabra {
     private String text;
     private boolean taken = false;

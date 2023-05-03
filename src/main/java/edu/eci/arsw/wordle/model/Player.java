@@ -1,7 +1,5 @@
 package edu.eci.arsw.wordle.model;
 
-import java.util.Objects;
-
 public class Player {
     private String nickname;
     private int roundsWon = 0;
