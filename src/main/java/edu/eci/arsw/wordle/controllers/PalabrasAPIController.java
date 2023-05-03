@@ -8,6 +8,8 @@ import edu.eci.arsw.wordle.services.PalabraServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -22,6 +24,7 @@ public class PalabrasAPIController {
     LobbyServices lobbyServices = null;
 
     @RequestMapping()
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public ResponseEntity<?> proveWord(@RequestParam("palabra") String palabra, @RequestParam("round")  int round, @RequestParam("nickname") String nickname, @PathVariable("idLobby") String idLobby) {
         try {
             Lobby lobby = lobbyServices.getLobby(idLobby);

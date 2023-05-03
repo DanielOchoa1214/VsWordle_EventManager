@@ -3,7 +3,7 @@ package edu.eci.arsw.wordle.persistence.impl;
 import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Player;
 import edu.eci.arsw.wordle.persistence.LobbiesInterface;
-import edu.eci.arsw.wordle.persistence.mongo.MongoDataBaseInterface;
+import edu.eci.arsw.wordle.persistence.mongointerface.MongoDataBaseInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

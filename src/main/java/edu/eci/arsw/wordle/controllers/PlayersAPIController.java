@@ -9,6 +9,8 @@ import edu.eci.arsw.wordle.services.PlayerServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,6 +48,7 @@ public class PlayersAPIController {
     }
 
     @PostMapping
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public ResponseEntity<?> addPlayer(@RequestBody Player player, @PathVariable("idLobby") String idLobby) {
         try{
             Lobby lobby = lobbyServices.getLobby(idLobby);
@@ -68,6 +71,7 @@ public class PlayersAPIController {
     }
 
     @DeleteMapping
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public ResponseEntity<?> removePlayer(@RequestBody Player player, @PathVariable("idLobby") String idLobby){
         try{
             Lobby lobby = lobbyServices.getLobby(idLobby);

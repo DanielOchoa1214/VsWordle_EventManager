@@ -7,6 +7,8 @@ import edu.eci.arsw.wordle.services.LobbyServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,6 +53,7 @@ public class LobbyAPIController {
     }
 
     @PutMapping(value = "/{idLobby}/startGame")
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public ResponseEntity<?> startGame(@PathVariable("idLobby") String idLobby) {
         try {
             Lobby lobby = lobbyServices.getLobby(idLobby);
@@ -62,6 +65,7 @@ public class LobbyAPIController {
     }
 
     @GetMapping(value = "/{idLobby}/winner")
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public ResponseEntity<?> getLobbyWinner(@PathVariable("idLobby") String idLobby) {
         try{
             Lobby lobby = lobbyServices.getLobby(idLobby);
@@ -82,15 +86,4 @@ public class LobbyAPIController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
-    /*@GetMapping(value = "/{idLobby}/statistics")
-    public ResponseEntity<?> getStatistics(@PathVariable("idLobby") String idLobby){
-        try {
-            Lobby lobby = lobbyServices.getLobby(idLobby);
-            List<Player> sortPlayers = lobbyServices.getStatistics(lobby);
-            return new ResponseEntity<>(sortPlayers, HttpStatus.ACCEPTED);
-        } catch (LobbyException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }*/
 }
