@@ -1,42 +1,76 @@
 package edu.eci.arsw.wordle.services;
 
-import edu.eci.arsw.wordle.model.Lobby;
 import edu.eci.arsw.wordle.model.Player;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.awt.image.AreaAveragingScaleFilter;
+import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class EventServices {
     @Autowired
     private RestTemplate restTemplate;
-    private final String SERVER = "http://localhost:8080/";
+    private final String SERVER = "http://localhost:8080/lobbies/";
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
     public void startGame(String lobbyId){
-        String url = SERVER + "lobbies/" + lobbyId + "/startGame";
-        System.out.println(restTemplate.getForObject(url, Boolean.class));
+        String url = SERVER + lobbyId + "/startGame";
+        HttpEntity<?> requestUpdate = new HttpEntity<>(null);
+        restTemplate.exchange(url, HttpMethod.PUT, requestUpdate, Void.class);
     }
 
     public List<Player> endGame(String lobbyId){
-        String url = SERVER + "lobbies/" + lobbyId + "/endGame";
-        List<Player> nose = restTemplate.getForObject(url, List.class);
-        System.out.println(nose);
-        return nose;
+        try {
+            String url = SERVER + lobbyId + "/winner";
+            ResponseEntity<Player[]> response = restTemplate.getForEntity(url, Player[].class);
+            Player[] players = response.getBody();
+            List<Player> playerList = Arrays.asList(players);
+            return playerList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public void removePlayer(String lobbyId, Player player){
-
+    public void removePlayer(String lobbyId, Player player) {
+        try {
+            String url = SERVER + lobbyId + "/players";
+            HttpEntity<Player> request = new HttpEntity<>(player);
+            restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void addWrongLetter(String idLobby, Player player){
-
+    public void addCorrectLetter(String lobbyId, Player player){
+        try {
+            String url = SERVER + lobbyId + "/players/addCorrect";
+            HttpEntity<Player> request = new HttpEntity<>(player);
+            restTemplate.exchange(url, HttpMethod.PUT, request, String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void addCorrectLetter(String idLobby, Player player){
-
+    public void addWrongLetter(String lobbyId, Player player){
+        try {
+            String url = SERVER + lobbyId + "/players/addWrong";
+            HttpEntity<Player> request = new HttpEntity<>(player);
+            restTemplate.exchange(url, HttpMethod.PUT, request, String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-
 }

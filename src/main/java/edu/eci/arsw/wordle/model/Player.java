@@ -1,5 +1,10 @@
 package edu.eci.arsw.wordle.model;
 
+import org.springframework.util.LinkedMultiValueMap;
+
+import java.util.LinkedHashMap;
+import java.util.SimpleTimeZone;
+
 public class Player {
     private String nickname;
     private int roundsWon = 0;
@@ -49,4 +54,5 @@ public class Player {
     private boolean equals(Player player){
         return this.nickname.equals(player.nickname);
     }
+
 }
