@@ -19,7 +19,7 @@ import java.util.List;
 public class EventServices {
     @Autowired
     private RestTemplate restTemplate;
-    private final String SERVER = "http://localhost:8080/lobbies/";
+    private final String SERVER = "http://20.96.73.221/lobbies";
 
     @Bean
     public RestTemplate restTemplate() {
